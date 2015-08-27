@@ -5808,7 +5808,8 @@ th.hide-for-touch {
       color: #000000; }
 
 #footer .bottom-bar {
-  border-top: 2pt solid #548235; }
+  border-top: 2pt solid #548235;
+  overflow: visible; }
   #footer .bottom-bar:before {
     content: '';
     position: absolute;
