@@ -5895,6 +5895,12 @@ th.hide-for-touch {
 #main .gallery {
   width: 100%;
   height: auto; }
+#main .main-content {
+  margin-top: 0.625rem; }
+#main .content-neighbors-link .next-link {
+  float: left; }
+#main .content-neighbors-link .prev-link {
+  float: right; }
 
 #sidebar .widget:first-of-type {
   margin-top: 0; }
@@ -5930,12 +5936,12 @@ th.hide-for-touch {
 .highlight {
   margin: 0;
   overflow: auto;
-  background: #2d2d2d;
-  padding: 0.9375rem 0.9375rem; }
+  background: #2d2d2d; }
   .highlight table {
     width: 100%;
     background: transparent;
-    border: none; }
+    border: none;
+    margin-bottom: 0; }
     .highlight table tr td {
       color: #cccccc;
       font-size: 1rem; }
@@ -5944,10 +5950,12 @@ th.hide-for-touch {
     margin: 0;
     padding: 0;
     font-family: "Source Code Pro", Consolas, Monaco, Menlo, Consolas, monospace; }
-  .highlight .gutter pre {
-    text-align: right;
-    padding-right: 1.25rem;
-    color: #666; }
+  .highlight .gutter {
+    width: 5rem; }
+    .highlight .gutter pre {
+      text-align: right;
+      padding-right: 1.25rem;
+      color: #666; }
   .highlight .comment, .highlight .title {
     color: #999999; }
   .highlight .variable, .highlight .attribute, .highlight .tag, .highlight .regexp, .highlight .ruby .constant, .highlight .xml .tag .title, .highlight .xml .pi, .highlight .xml .doctype, .highlight .html .doctype, .highlight .css .id, .highlight .css .class, .highlight .css .pseudo, .highlight .number, .highlight .preprocessor, .highlight .built_in, .highlight .literal, .highlight .params, .highlight .constant {
