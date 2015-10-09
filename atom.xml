@@ -5,7 +5,7 @@
   <subtitle><![CDATA[捕捉技术与生活中的灵感]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.sparkshining.com//"/>
-  <updated>2015-10-08T11:33:13.000Z</updated>
+  <updated>2015-10-09T10:02:55.000Z</updated>
   <id>http://blog.sparkshining.com//</id>
   
   <author>
@@ -16,11 +16,60 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[如何生成一个安全的随机数]]></title>
+    <link href="http://blog.sparkshining.com/2015/10/09/js-safe-get-random/"/>
+    <id>http://blog.sparkshining.com/2015/10/09/js-safe-get-random/</id>
+    <published>2015-10-09T09:54:03.000Z</published>
+    <updated>2015-10-09T10:02:55.000Z</updated>
+    <content type="html"><![CDATA[<p>提起随机数，大家的第一反应一般是Math.random。然而，
+    <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.8.2.14" target="_blank" rel="external">ECMAScript里面</a>(中文版见
+    <a href="http://lzw.me/pages/ecmascript/#457" target="_blank" rel="external">这里</a>)并没有规定用什么算法来实现这个API，只是规定了生成的数字应该在[0, 1)内近似均匀分布。这就使得很多引擎实现在实现时采用了比较简单地算法，并不保证随机数的不可预测。
+    <br>这样的随机数显然不能用于数据加密。那么，有什么API可以获得一个安全的随机数呢？</p>
+<p>如果是Node.js，你可以使用
+    <a href="https://nodejs.org/api/crypto.html#crypto_crypto_randombytes_size_callback" target="_blank" rel="external">crypto.randomBytes(size[, callback])</a>这个API，比如下面的code获得了一个包含4个byte的随机数：
+    <br>
+    <figure class="highlight javascript">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td>
+                <td class="code"><pre><span class="line">crypto.randomBytes(<span class="number">4</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, buf</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (err) <span class="keyword">return</span>;</span><br><span class="line">	<span class="built_in">console</span>.log(buf.length);</span><br><span class="line">	<span class="built_in">console</span>.log(buf[<span class="number">0</span>], buf[<span class="number">1</span>], buf[<span class="number">2</span>], buf[<span class="number">3</span>]);</span><br><span class="line">&#125;);</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>那浏览器端怎么办呢，你可以使用
+    <a href="http://www.w3.org/TR/WebCryptoAPI/#Crypto-method-getRandomValues" target="_blank" rel="external">crypto.getRandomValues(array)</a>这个API，现在很多浏览器都支持这个API了（具体浏览器支持情况请见
+    <a href="http://caniuse.com/#feat=getrandomvalues" target="_blank" rel="external">这里</a>），比如下面的code获得了一个Uint32（4个byte）的随机数：
+    <br>
+    <figure class="highlight javascript">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td>
+                <td class="code"><pre><span class="line"><span class="keyword">var</span> buffer = <span class="keyword">new</span> <span class="built_in">Uint32Array</span>(<span class="number">1</span>);</span><br><span class="line">crypto.getRandomValues(buffer);</span><br><span class="line"><span class="built_in">console</span>.log(buffer[<span class="number">0</span>]);</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>搞定，收工！</p>]]></content>
+    <summary type="html">
+    <![CDATA[如何在Node.js和浏览器中获取安全的随机数<br>]]>
+    
+    </summary>
+    
+      <category term="JS" scheme="http://blog.sparkshining.com/tags/JS/"/>
+    
+      <category term="天天向上" scheme="http://blog.sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+    
+      <category term="技术" scheme="http://blog.sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[自定义JS对象的序列化与反序列化过程]]></title>
     <link href="http://blog.sparkshining.com/2015/10/08/jsobject-serialization-deserialization/"/>
     <id>http://blog.sparkshining.com/2015/10/08/jsobject-serialization-deserialization/</id>
     <published>2015-10-08T08:32:08.000Z</published>
-    <updated>2015-10-08T11:33:13.000Z</updated>
+    <updated>2015-10-09T10:02:33.000Z</updated>
     <content type="html"><![CDATA[<p>从今天起，我会争取每天就一个小技术点写一篇短文。
     <br>闲言少叙，正式开始。</p>
 <p>先更正一个概念，JSON是一种数据表达的格式（见
@@ -70,6 +119,8 @@
     <![CDATA[关于JSON.stringify和JSON.parse的第二个参数<br>]]>
     
     </summary>
+    
+      <category term="JS" scheme="http://blog.sparkshining.com/tags/JS/"/>
     
       <category term="天天向上" scheme="http://blog.sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
     
