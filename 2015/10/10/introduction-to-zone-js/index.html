@@ -75,7 +75,7 @@
                         </table>
                     </figure>
                 </p>
-                <p>比如，在beforeTask记录下开始时间，afterTask时记录下结束时间、与开始时间比较算出执行时间并且累加，你就可以解决前文说过的那个问题了。本文开头的Angular 2的\$rootScope.\$apply的迷雾也就解开了，因为Angular 2使用了zone并且在afterTask时帮你执行这个了。</p>
+                <p>比如，在beforeTask记录下开始时间，afterTask时记录下结束时间、与开始时间比较算出执行时间并且累加，你就可以解决前文说过的那个问题了。本文开头的Angular 2的$rootScope.$apply的迷雾也就解开了，因为Angular 2使用了zone并且在afterTask时帮你执行这个了。</p>
                 <p>zone.js的实现原理很简单，就是mock掉你的每个入口位置。多么地简单粗暴啊！但是非常有效。</p>
                 <p>说了这么多，来看一个最最简单地例子吧：我们想在每次执行代码(主函数、事件监听函数和setTimeout加入的macrotask)的前后各打印一行log。</p>
                 <p>首先，我们新创建一个空文件夹来装例子所需的文件。
