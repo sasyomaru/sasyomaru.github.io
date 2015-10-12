@@ -13,12 +13,8 @@
     <header id="header">
         <div class="top-bar">
             <div class="toolbar">
-                <a href="/atom.xml">
-                    <i class="fi-rss"></i>
-                </a>
-                <a>
-                    <i class="fi-magnifying-glass"></i>
-                </a>
+                <a href="/atom.xml" class="fi-rss"></a>
+                <a class="fi-magnifying-glass not-ready"></a>
             </div>
             <ul class="site-title-area">
                 <li class="site-title">
@@ -44,6 +40,7 @@
                         <div class="year-and-month">2015年10月</div>
                     </div>
                     <div class="summary">当你使用Angular 2的时候，你会惊喜地发现你不再需要$rootScope.$apply了，即使你直接调用addEventListener挂载一个事件处理器偷偷修改了模型，也不需要通知Angular。Angular似乎能够“未卜先知”地知道你的所有小动作。这一切的功劳都归功于zone.js。
+                        <br>
                         <a href="/2015/10/10/introduction-to-zone-js/">更多内容 》</a>
                     </div>
                     <div class="article-tags">
@@ -66,7 +63,8 @@
                         <div class="date">9</div>
                         <div class="year-and-month">2015年10月</div>
                     </div>
-                    <div class="summary">如何在Node.js和浏览器中获取安全的随机数
+                    <div class="summary">提起随机数，大家的第一反应一般是Math.random。然而，ECMAScript里面并没有规定用什么算法来实现这个API，只是规定了生成的数字应该在[0, 1)内近似均匀分布。这就使得很多引擎实现在实现时采用了比较简单地算法，并不保证随机数的不可预测。这样的随机数显然不能用于数据加密。那么，有什么API可以获得一个安全的随机数呢？
+                        <br>
                         <a href="/2015/10/09/js-safe-get-random/">更多内容 》</a>
                     </div>
                     <div class="article-tags">
@@ -89,7 +87,8 @@
                         <div class="date">8</div>
                         <div class="year-and-month">2015年10月</div>
                     </div>
-                    <div class="summary">关于JSON.stringify和JSON.parse的第二个参数
+                    <div class="summary">JSON.stringify和JSON.parse的第二个参数使得我们可以控制序列化和反序列化的过程。
+                        <br>
                         <a href="/2015/10/08/jsobject-serialization-deserialization/">更多内容 》</a>
                     </div>
                     <div class="article-tags">
@@ -111,6 +110,12 @@
                 <section class="widget me">
                     <img src="/images/avatar.png" class="avatar">
                     <div class="introduction">流星泉，一个热爱技术、热爱生活的人，目前就职于Blackboard</div>
+                    <div class="social-media">
+                        <a href="mailto:spark.liu.1984@gmail.com" class="fi-mail"></a>
+                        <a href="skype:live:spark.liu?add" class="fi-social-skype"></a>
+                        <a href="http://cn.linkedin.com/in/sparkliu1984" target="_blank" class="fi-social-linkedin"></a>
+                        <a href="https://github.com/sasyomaru" target="_blank" class="fi-social-github"></a>
+                    </div>
                 </section>
                 <section class="widget categories">
                     <div class="fi-list list-name">分类</div>

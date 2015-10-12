@@ -4,9 +4,9 @@
   <title><![CDATA[顿悟]]></title>
   <subtitle><![CDATA[捕捉技术与生活中的灵感]]></subtitle>
   <link href="/atom.xml" rel="self"/>
-  <link href="http://blog.sparkshining.com//"/>
-  <updated>2015-10-10T10:20:42.000Z</updated>
-  <id>http://blog.sparkshining.com//</id>
+  <link href="http://sparkshining.com//"/>
+  <updated>2015-10-12T08:51:17.000Z</updated>
+  <id>http://sparkshining.com//</id>
   
   <author>
     <name><![CDATA[流星泉]]></name>
@@ -17,10 +17,10 @@
   
   <entry>
     <title><![CDATA[zone.js简介]]></title>
-    <link href="http://blog.sparkshining.com/2015/10/10/introduction-to-zone-js/"/>
-    <id>http://blog.sparkshining.com/2015/10/10/introduction-to-zone-js/</id>
+    <link href="http://sparkshining.com/2015/10/10/introduction-to-zone-js/"/>
+    <id>http://sparkshining.com/2015/10/10/introduction-to-zone-js/</id>
     <published>2015-10-10T10:15:33.000Z</published>
-    <updated>2015-10-10T10:20:42.000Z</updated>
+    <updated>2015-10-12T08:51:17.000Z</updated>
     <content type="html"><![CDATA[<p>当你使用Angular 2的时候，你会惊喜地发现你不再需要$rootScope.$apply了，即使你直接调用addEventListener挂载一个事件处理器偷偷修改了模型，也不需要通知Angular。Angular似乎能够“未卜先知”地知道你的所有小动作。这一切的功劳都归功于zone.js。</p>
 <p>zone.js的github地址见
     <a href="https://github.com/angular/zone.js" target="_blank" rel="external">这里</a>。原代码库提供了一个
@@ -88,22 +88,22 @@
     <a href="https://github.com/indexzero/http-server" target="_blank" rel="external">http-server</a>的方法来部署这个文件并用浏览器访问。
     <br>在页面加载后，你会在控制台看到如下信息
     <br>
-    <figure class="highlight dockerfile">
+    <figure class="highlight python">
         <table>
             <tr>
                 <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td>
-                <td class="code"><pre><span class="line">Enter zone</span><br><span class="line"><span class="built_in">Run</span> <span class="bash">main</span><br><span class="line"></span>Leave zone</span><br></pre></td>
+                <td class="code"><pre><span class="line">Enter zone</span><br><span class="line">Run main</span><br><span class="line">Leave zone</span><br></pre></td>
             </tr>
         </table>
     </figure>
 </p>
 <p>当点击页面中的按钮时，控制台会打印如下信息
     <br>
-    <figure class="highlight dockerfile">
+    <figure class="highlight python">
         <table>
             <tr>
                 <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td>
-                <td class="code"><pre><span class="line">Enter zone</span><br><span class="line"><span class="built_in">Run</span> <span class="bash">click handler</span><br><span class="line"></span>Leave zone</span><br><span class="line">Enter zone</span><br><span class="line"><span class="built_in">Run</span> <span class="bash">macro task</span><br><span class="line"></span>Leave zone</span><br></pre></td>
+                <td class="code"><pre><span class="line">Enter zone</span><br><span class="line">Run click handler</span><br><span class="line">Leave zone</span><br><span class="line">Enter zone</span><br><span class="line">Run macro task</span><br><span class="line">Leave zone</span><br></pre></td>
             </tr>
         </table>
     </figure>
@@ -114,20 +114,20 @@
     
     </summary>
     
-      <category term="JS" scheme="http://blog.sparkshining.com/tags/JS/"/>
+      <category term="JS" scheme="http://sparkshining.com/tags/JS/"/>
     
-      <category term="天天向上" scheme="http://blog.sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+      <category term="天天向上" scheme="http://sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
     
-      <category term="技术" scheme="http://blog.sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="http://sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[如何生成一个安全的随机数]]></title>
-    <link href="http://blog.sparkshining.com/2015/10/09/js-safe-get-random/"/>
-    <id>http://blog.sparkshining.com/2015/10/09/js-safe-get-random/</id>
+    <link href="http://sparkshining.com/2015/10/09/js-safe-get-random/"/>
+    <id>http://sparkshining.com/2015/10/09/js-safe-get-random/</id>
     <published>2015-10-09T09:54:03.000Z</published>
-    <updated>2015-10-10T10:17:43.000Z</updated>
+    <updated>2015-10-12T08:51:17.000Z</updated>
     <content type="html"><![CDATA[<p>提起随机数，大家的第一反应一般是Math.random。然而，
     <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.8.2.14" target="_blank" rel="external">ECMAScript里面</a>(中文版见
     <a href="http://lzw.me/pages/ecmascript/#457" target="_blank" rel="external">这里</a>)并没有规定用什么算法来实现这个API，只是规定了生成的数字应该在[0, 1)内近似均匀分布。这就使得很多引擎实现在实现时采用了比较简单地算法，并不保证随机数的不可预测。
@@ -159,24 +159,24 @@
 </p>
 <p>搞定，收工！</p>]]></content>
     <summary type="html">
-    <![CDATA[如何在Node.js和浏览器中获取安全的随机数]]>
+    <![CDATA[提起随机数，大家的第一反应一般是Math.random。然而，ECMAScript里面并没有规定用什么算法来实现这个API，只是规定了生成的数字应该在[0, 1)内近似均匀分布。这就使得很多引擎实现在实现时采用了比较简单地算法，并不保证随机数的不可预测。这样的随机数显然不能用于数据加密。那么，有什么API可以获得一个安全的随机数呢？]]>
     
     </summary>
     
-      <category term="JS" scheme="http://blog.sparkshining.com/tags/JS/"/>
+      <category term="JS" scheme="http://sparkshining.com/tags/JS/"/>
     
-      <category term="天天向上" scheme="http://blog.sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+      <category term="天天向上" scheme="http://sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
     
-      <category term="技术" scheme="http://blog.sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="http://sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[自定义JS对象的序列化与反序列化过程]]></title>
-    <link href="http://blog.sparkshining.com/2015/10/08/jsobject-serialization-deserialization/"/>
-    <id>http://blog.sparkshining.com/2015/10/08/jsobject-serialization-deserialization/</id>
+    <link href="http://sparkshining.com/2015/10/08/jsobject-serialization-deserialization/"/>
+    <id>http://sparkshining.com/2015/10/08/jsobject-serialization-deserialization/</id>
     <published>2015-10-08T08:32:08.000Z</published>
-    <updated>2015-10-10T10:17:49.000Z</updated>
+    <updated>2015-10-12T08:51:17.000Z</updated>
     <content type="html"><![CDATA[<p>从今天起，我会争取每天就一个小技术点写一篇短文。
     <br>闲言少叙，正式开始。</p>
 <p>先更正一个概念，JSON是一种数据表达的格式（见
@@ -223,24 +223,24 @@
     <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.12.3" target="_blank" rel="external">ECMAScript规范相关部分</a>(中文版见
     <a href="http://lzw.me/pages/ecmascript/#614" target="_blank" rel="external">这里</a>)。最有意思的是，你还可以通过定义toJSON函数来自定义序列化的过程。</p>]]></content>
     <summary type="html">
-    <![CDATA[关于JSON.stringify和JSON.parse的第二个参数]]>
+    <![CDATA[JSON.stringify和JSON.parse的第二个参数使得我们可以控制序列化和反序列化的过程。]]>
     
     </summary>
     
-      <category term="JS" scheme="http://blog.sparkshining.com/tags/JS/"/>
+      <category term="JS" scheme="http://sparkshining.com/tags/JS/"/>
     
-      <category term="天天向上" scheme="http://blog.sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+      <category term="天天向上" scheme="http://sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
     
-      <category term="技术" scheme="http://blog.sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="http://sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[开篇志]]></title>
-    <link href="http://blog.sparkshining.com/2015/08/27/hello-world/"/>
-    <id>http://blog.sparkshining.com/2015/08/27/hello-world/</id>
+    <link href="http://sparkshining.com/2015/08/27/hello-world/"/>
+    <id>http://sparkshining.com/2015/08/27/hello-world/</id>
     <published>2015-08-27T11:23:29.000Z</published>
-    <updated>2015-10-10T10:17:39.000Z</updated>
+    <updated>2015-10-12T11:22:32.000Z</updated>
     <content type="html"><![CDATA[<p>一个雨后的黄昏，一杯清茶，一支笔，一张纸。就此开始。</p>
 <p>其实上大学那会儿，还是个挺矫情的人，没事就写点东西。等工了作，成了家，有了孩子，事情一多，也就慢慢变得大条了。
     <br>当然，也是生活舒适了，没那么多伤春悲秋的事。
@@ -264,9 +264,9 @@
     
     </summary>
     
-      <category term="瞎扯" scheme="http://blog.sparkshining.com/tags/%E7%9E%8E%E6%89%AF/"/>
+      <category term="瞎扯" scheme="http://sparkshining.com/tags/%E7%9E%8E%E6%89%AF/"/>
     
-      <category term="生活" scheme="http://blog.sparkshining.com/categories/%E7%94%9F%E6%B4%BB/"/>
+      <category term="生活" scheme="http://sparkshining.com/categories/%E7%94%9F%E6%B4%BB/"/>
     
   </entry>
   
