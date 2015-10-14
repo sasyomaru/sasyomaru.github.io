@@ -5,7 +5,7 @@
   <subtitle><![CDATA[捕捉技术与生活中的灵感]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://sparkshining.com//"/>
-  <updated>2015-10-12T12:06:07.000Z</updated>
+  <updated>2015-10-14T10:14:47.000Z</updated>
   <id>http://sparkshining.com//</id>
   
   <author>
@@ -14,6 +14,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[通俗地解释第三方登录]]></title>
+    <link href="http://sparkshining.com/2015/10/14/common-third-party-authentication/"/>
+    <id>http://sparkshining.com/2015/10/14/common-third-party-authentication/</id>
+    <published>2015-10-14T10:11:51.000Z</published>
+    <updated>2015-10-14T10:14:47.000Z</updated>
+    <content type="html"><![CDATA[<p>最近正在做SAML相关的事情，苦于没有一个第三方登录流程的通俗解释。结合以前做过的OpenID，试着自己解释一下。以下故事中机构名与人名均属化名，如有雷同，纯属巧合。</p>
+<p>话说最近上海开了一家“人间天上”高级程序员休闲会所，供程序员在里面聊聊算法、思考人生。一天，有一个衣着入时的美女来找会所看门的王二狗，该美女自称是高级程序员，名叫郭小美，要求入会。王二狗又不是混程序圈的，咋知道这个人该不该放进去呢？于是王二狗请示安保主管雷老大。雷老大眼睛一瞪：老子又不是神仙，咋知道？
+    <br>不过雷老大不愧是雷老大，经得多见得广，这点小事难不倒他。雷老大亲自接见郭小美，几个来回，事情就办成了：</p>
+<ol>
+    <li>雷老大拱了拱手：没听说过姑娘的名号，不知道是那路的？郭小美嫣然一笑：瞧您说的，没点背景还敢来？我是高级程序员协会的。</li>
+    <li>雷老大大腿一拍：这就好办了，认识高级程序员协会会长盖茨比么？郭小美一愣：当然认识了，我干爹呀。</li>
+    <li>雷老大嘿嘿一笑：这就更不是外人了。可惜这入会严格的规矩上面定的，我也没办法，要不你让盖茨比批个条子拿来，也让兄弟方便？郭小美皱了皱眉：真麻烦，好吧，就这么办！</li>
+    <li>郭小美去找盖茨比，凭借着两人深厚的革命友谊，很快条子拿来了。上面一行字：兹证明郭小美（女，身份证号XXX，三围XXX）是高级程序员协会会员——盖茨比。笔锋苍劲，一看就是练过的。</li>
+</ol>
+<p>看到条子，雷老大满脸堆笑：不好意思呀，还让郭小姐多跑了一趟。回头招呼王二狗：傻站着干啥，赶紧办理入会！</p>]]></content>
+    <summary type="html">
+    <![CDATA[最近正在做SAML相关的事情，苦于没有一个第三方登录流程的通俗解释。结合以前做过的OpenID，试着自己解释一下。以下故事中机构名与人名均属化名，如有雷同，纯属巧合。]]>
+    
+    </summary>
+    
+      <category term="天天向上" scheme="http://sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+    
+      <category term="模型解释" scheme="http://sparkshining.com/tags/%E6%A8%A1%E5%9E%8B%E8%A7%A3%E9%87%8A/"/>
+    
+      <category term="技术" scheme="http://sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[zone.js简介]]></title>

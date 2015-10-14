@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>如何生成一个安全的随机数 - 顿悟</title>
+    <title>通俗地解释第三方登录 - 顿悟</title>
     <link rel="stylesheet" href="/css/app.css" type="text/css">
     <link rel="stylesheet" href="/css/foundation-icons/foundation-icons.css" type="text/css">
 </head>
@@ -30,57 +30,36 @@
     </header>
     <div class="container">
         <section id="main">
-            <h1 class="title">如何生成一个安全的随机数</h1>
+            <h1 class="title">通俗地解释第三方登录</h1>
             <section class="categories-and-tags">
                 <span>本文发表于</span>
                 <a class="category-link" href="/categories/技术/">技术</a>
                 <span>栏目，标签：</span>
-                <a class="tag-link" href="/tags/JS/">JS</a>、
-                <a class="tag-link" href="/tags/天天向上/">天天向上</a>
+                <a class="tag-link" href="/tags/天天向上/">天天向上</a>、
+                <a class="tag-link" href="/tags/模型解释/">模型解释</a>
             </section>
             <section class="main-content">
-                <p>提起随机数，大家的第一反应一般是Math.random。然而，
-                    <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.8.2.14" target="_blank" rel="external">ECMAScript里面</a>(中文版见
-                    <a href="http://lzw.me/pages/ecmascript/#457" target="_blank" rel="external">这里</a>)并没有规定用什么算法来实现这个API，只是规定了生成的数字应该在[0, 1)内近似均匀分布。这就使得很多引擎实现在实现时采用了比较简单地算法，并不保证随机数的不可预测。
-                    <br>这样的随机数显然不能用于数据加密。那么，有什么API可以获得一个安全的随机数呢？</p>
-                <p>如果是Node.js，你可以使用
-                    <a href="https://nodejs.org/api/crypto.html#crypto_crypto_randombytes_size_callback" target="_blank" rel="external">crypto.randomBytes(size[, callback])</a>这个API，比如下面的code获得了一个包含4个byte的随机数：
-                    <br>
-                    <figure class="highlight javascript">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td>
-                                <td class="code"><pre><span class="line">crypto.randomBytes(<span class="number">4</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, buf</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">return</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(buf.length);</span><br><span class="line">  <span class="built_in">console</span>.log(buf[<span class="number">0</span>], buf[<span class="number">1</span>], buf[<span class="number">2</span>], buf[<span class="number">3</span>]);</span><br><span class="line">&#125;);</span><br></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>那浏览器端怎么办呢，你可以使用
-                    <a href="http://www.w3.org/TR/WebCryptoAPI/#Crypto-method-getRandomValues" target="_blank" rel="external">crypto.getRandomValues(array)</a>这个API，现在很多浏览器都支持这个API了（具体浏览器支持情况请见
-                    <a href="http://caniuse.com/#feat=getrandomvalues" target="_blank" rel="external">这里</a>），比如下面的code获得了一个Uint32（4个byte）的随机数：
-                    <br>
-                    <figure class="highlight javascript">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td>
-                                <td class="code"><pre><span class="line"><span class="keyword">var</span> buffer = <span class="keyword">new</span> <span class="built_in">Uint32Array</span>(<span class="number">1</span>);</span><br><span class="line">crypto.getRandomValues(buffer);</span><br><span class="line"><span class="built_in">console</span>.log(buffer[<span class="number">0</span>]);</span><br></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>搞定，收工！</p>
+                <p>最近正在做SAML相关的事情，苦于没有一个第三方登录流程的通俗解释。结合以前做过的OpenID，试着自己解释一下。以下故事中机构名与人名均属化名，如有雷同，纯属巧合。</p>
+                <p>话说最近上海开了一家“人间天上”高级程序员休闲会所，供程序员在里面聊聊算法、思考人生。一天，有一个衣着入时的美女来找会所看门的王二狗，该美女自称是高级程序员，名叫郭小美，要求入会。王二狗又不是混程序圈的，咋知道这个人该不该放进去呢？于是王二狗请示安保主管雷老大。雷老大眼睛一瞪：老子又不是神仙，咋知道？
+                    <br>不过雷老大不愧是雷老大，经得多见得广，这点小事难不倒他。雷老大亲自接见郭小美，几个来回，事情就办成了：</p>
+                <ol>
+                    <li>雷老大拱了拱手：没听说过姑娘的名号，不知道是那路的？郭小美嫣然一笑：瞧您说的，没点背景还敢来？我是高级程序员协会的。</li>
+                    <li>雷老大大腿一拍：这就好办了，认识高级程序员协会会长盖茨比么？郭小美一愣：当然认识了，我干爹呀。</li>
+                    <li>雷老大嘿嘿一笑：这就更不是外人了。可惜这入会严格的规矩上面定的，我也没办法，要不你让盖茨比批个条子拿来，也让兄弟方便？郭小美皱了皱眉：真麻烦，好吧，就这么办！</li>
+                    <li>郭小美去找盖茨比，凭借着两人深厚的革命友谊，很快条子拿来了。上面一行字：兹证明郭小美（女，身份证号XXX，三围XXX）是高级程序员协会会员——盖茨比。笔锋苍劲，一看就是练过的。</li>
+                </ol>
+                <p>看到条子，雷老大满脸堆笑：不好意思呀，还让郭小姐多跑了一趟。回头招呼王二狗：傻站着干啥，赶紧办理入会！</p>
             </section>
             <section class="copyright">
                 <span>本文章版权声明：自由转载-非商用-非衍生-保持署名（</span>
                 <a href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank">知识共享Attribution-NoDerivatives 4.0 国际许可协议</a>
                 <span>）。原文地址：</span>
-                <a href="http://sparkshining.com/2015/10/09/js-safe-get-random/">http://sparkshining.com/2015/10/09/js-safe-get-random/</a>
+                <a href="http://sparkshining.com/2015/10/14/common-third-party-authentication/">http://sparkshining.com/2015/10/14/common-third-party-authentication/</a>
             </section>
             <section class="content-neighbors-link">
-                <a href="/2015/10/08/jsobject-serialization-deserialization/" class="next-link">&lt;&lt; 旧一篇: 自定义JS对象的序列化与反序列化过程</a>
-                <a href="/2015/10/10/introduction-to-zone-js/" class="prev-link">新一篇: zone.js简介 &gt;&gt;</a>
+                <a href="/2015/10/10/introduction-to-zone-js/" class="next-link">&lt;&lt; 旧一篇: zone.js简介</a>
             </section>
-            <div data-thread-key="js-safe-get-random" data-title="如何生成一个安全的随机数" data-url="http://sparkshining.com/2015/10/09/js-safe-get-random/" class="ds-thread"></div>
+            <div data-thread-key="common-third-party-authentication" data-title="通俗地解释第三方登录" data-url="http://sparkshining.com/2015/10/14/common-third-party-authentication/" class="ds-thread"></div>
             <script type="text/javascript">
                 var duoshuoQuery = {
                     short_name: "sparkshining"
