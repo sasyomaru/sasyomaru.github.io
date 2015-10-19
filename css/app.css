@@ -5902,6 +5902,9 @@ th.hide-for-touch {
   height: auto; }
 #main .main-content {
   margin-top: 0.625rem; }
+#main .categories-and-tags {
+  margin-top: 0.625rem;
+  font-weight: bold; }
 #main .copyright {
   font-weight: bold; }
 #main .content-neighbors-link {
@@ -5910,6 +5913,8 @@ th.hide-for-touch {
     float: left; }
   #main .content-neighbors-link .prev-link {
     float: right; }
+#main .ds-thread {
+  margin-top: 3.4375rem; }
 
 #sidebar .widget:first-of-type {
   margin-top: 0; }
