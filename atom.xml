@@ -5,7 +5,7 @@
   <subtitle><![CDATA[捕捉技术与生活中的灵感]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://sparkshining.com//"/>
-  <updated>2015-10-14T10:14:47.000Z</updated>
+  <updated>2015-11-02T06:12:13.000Z</updated>
   <id>http://sparkshining.com//</id>
   
   <author>
@@ -14,6 +14,122 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Lambda表达式中的arguments]]></title>
+    <link href="http://sparkshining.com/2015/11/02/arguments-in-lambda/"/>
+    <id>http://sparkshining.com/2015/11/02/arguments-in-lambda/</id>
+    <published>2015-11-02T06:07:58.000Z</published>
+    <updated>2015-11-02T06:12:13.000Z</updated>
+    <content type="html"><![CDATA[<p>最近在一个项目中遇到了这个坑，记下来，以警来者。</p>
+<p>JavaScript在ES2015中初次引入了箭头函数（Arrow Function）这一俗称“lambda表达式”的概念，用来解决代码中this容易用错的问题（注意，this的定义从来就没有歧义，但确实是有点“反直觉”，容易被曾使用过其他语言的开发者误用）。想要了解这一特性，可以参阅
+    <a href="http://es6.ruanyifeng.com/#docs/function" target="_blank" rel="external">这篇介绍ES6的文章</a>中“箭头函数”一节（原文中已对本文所述的问题做了介绍）。</p>
+<p>在
+    <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-arrow-function-definitions-runtime-semantics-evaluation" target="_blank" rel="external">ES2015语言规范</a>中，明确规定了箭头函数不定义arguments的本地绑定。换句话说，如果在箭头函数中使用了arguments，则其值为生成该函数的参数列表，比如下面代码：
+    <br>
+    <figure class="highlight javascript">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td>
+                <td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getFunction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> () =&gt; <span class="built_in">console</span>.log(<span class="built_in">arguments</span>[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> praise = getFunction(<span class="string">'You suck!'</span>);</span><br><span class="line">praise(<span class="string">'You are great!'</span>);</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>如果在支持ES2015的浏览器（比如最新版的Chrome，笔者版本为46.0）上执行时你会发现，控制台会打印如下结果：
+    <br>
+    <figure class="highlight">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br></pre></td>
+                <td class="code"><pre><span class="line">You suck!</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>而不是直觉上的You are great!</p>
+<p>本来这个问题比较简单，规范上面这么定义的，这么做就是了。偏偏有人来搅局了：在ES2015尚未发布之前，
+    <a href="http://www.typescriptlang.org/" target="_blank" rel="external">TypeScript</a>（一个微软推出的语言，为JavaScript的超集，由于与Angular 2和React的合作而逐渐被人所知）就定义了类似的功能并最初起名为Lambda(现已改为采用跟ES2015一致的术语“箭头函数”，但截至笔者写作本文时，有些文档尚未更新，比如
+    <a href="http://www.typescriptlang.org/Handbook#functions-lambdas-and-using-39this39" target="_blank" rel="external">这里</a>)。在TypeScript中，
+    <strong>起初</strong>并未对Lambda中的arguments做任何处理，因此，arguments所指向的就是最终函数的参数列表。也就是说如果你在TypeScript中编写了上文的程序，得到的打印结果就是You are great!。
+    <br>幸运的是，TypeScript的开发者即时地意识到了这一点（见
+    <a href="https://github.com/Microsoft/TypeScript/issues/1609" target="_blank" rel="external">这个TypeScript问题</a>）。因此，如果在lambda中使用了arguments，你会得到如下的结果：</p>
+<ol>
+    <li>在Typsecript 1.5之前，该代码顺利通过编译，生成与E2015语义不一致的代码</li>
+    <li>在TypeScript 1.5之后，如果编译目标是ES6，该代码会顺利通过编译，生成箭头函数</li>
+    <li>在TypeScript 1.5之后，如果编译目标是ES3或者ES5，则该代码不会通过编译，错误如下：
+        <figure class="highlight">
+            <table>
+                <tr>
+                    <td class="gutter"><pre><span class="line">1</span><br></pre></td>
+                    <td class="code"><pre><span class="line">error TS2496: The &#39;arguments&#39; object cannot be referenced in an arrow function in ES3 and ES5. Consider using a standard function expression.</span><br></pre></td>
+                </tr>
+            </table>
+        </figure>
+    </li>
+</ol>]]></content>
+    <summary type="html">
+    <![CDATA[最近在一个项目中遇到了这个坑，记下来，以警来者。JavaScript在ES2015中初次引入了箭头函数（Arrow Function）这一俗称“lambda表达式”的概念，用来解决代码中this容易用错的问题。]]>
+    
+    </summary>
+    
+      <category term="JS" scheme="http://sparkshining.com/tags/JS/"/>
+    
+      <category term="天天向上" scheme="http://sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+    
+      <category term="技术" scheme="http://sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[我的中医观]]></title>
+    <link href="http://sparkshining.com/2015/10/19/traditional-chinese-medical-science/"/>
+    <id>http://sparkshining.com/2015/10/19/traditional-chinese-medical-science/</id>
+    <published>2015-10-19T12:48:40.000Z</published>
+    <updated>2015-11-02T06:12:48.000Z</updated>
+    <content type="html"><![CDATA[<p>最近也许是因为屠呦呦的诺贝尔获奖，千年大坑“中医是不是科学”又烽烟再起，争论愈演愈烈。思考良久，颇有心得，于是诉诸笔端。笔者知识有限，有些观点可能有误，欢迎斧正。</p>
+<h3 id="中医是不是科学">中医是不是科学</h3>
+<p>说实话，经过我的观察，我觉得这个问题其实大家彼此异议最小。别急，听我慢慢道来。
+    <br>前两天看到了一篇文章，说到人们讨论的问题可以分为三类：一是事实性问题，就是讨论一见事情是否符合事实，多半这类问题可以转变成答案是“是”或者“否”的问题，比如今早吃没吃鸡蛋，这类问题有着唯一正确的结论，因为符合和没符合事实是互斥的；二是偏好性问题，就是你是否喜欢一个事物，比如红的好看还是绿的好看，这类问题没有错误的结论，因为不同人喜好不同；三是判断性问题，就是你对一个事物或现象的看法，这类问题的答案有多个，取决于你观察问题的角度。
+    <br>然而在我看来，这个归类法存在一个陷阱，那就是一个问题如果要成为事实性问题，必须其表述上是没有歧义的，而且这个唯一的含义能够得到所有参与讨论问题的人的认同。
+    <br>比如下面这个问题：太阳是否从东方升起？表面上看起来这是个事实性问题，答案只有“是”或者“否”，而且正确答案应该是“是”。但是你有没有想过，什么叫做“东方”，什么叫做“升起”呢？当你考虑过这些维度之后，你就会发现这个问题的答案不那么简单了：</p>
+<ol>
+    <li>太阳是不会自行升起的。我们只是在地球表面的一个观察点，基于地球自转的运动参照系观察到太阳在远离地心这个维度上有高度的上升变化。</li>
+    <li>这个观察点不包括南北极两个点，因为南极点只有北方而北极点只有南方。</li>
+    <li>东方表示的是以东方为中心，误差为23度26分21.448秒的一个方向的范围。否则，只有春分秋分那两天，太阳才是从非常接近东方的方向（还不能说是绝对的东方）升起的。有意思的是，对于我国绝大部分地区来说，冬至那天的太阳升起时的方向，距离正东北方反倒更接近些。</li>
+</ol>
+<p>那么，回到“中医是不是科学”这个问题：表面看起来，它是一个答案是“是”或者“否”的事实性问题。但是，如果认为这个问题有着唯一正确的结论，需要大家认可一个唯一的对“中医”和“科学”这两个概念的解释。很可惜，这样的无二义性的解释并不存在。笔者试着用一些没有二义性的方式来表述一些本人的看法，大家可以对照一下，是不是同自己的理解是一样的：</p>
+<ol>
+    <li>以下表述中，中医的定义为：主流的研究并发展“中医”这一概念的学者所认同的基于中国传统的对于医疗方向知识所总结的一套学说体系。西医的定义为：基于解剖学、物理学、化学、生物学、分子生物学等其他学科，辅以实验以及数据分析的对于医疗方向知识所总结的一套学说体系。</li>
+    <li>中医学说体系与西医学说体系在问题定义以及验证方法尚存在分歧。换句话说，目前并不存在双方均认可的问题定义和验证方法。</li>
+    <li>按照中医所提出的问题定义和验证方法，中医学说体系是可以通过实验方法验证的。</li>
+    <li>目前尚无足够多的数据对中医学说体系的基础理论证实或者证伪。</li>
+    <li>西医中主流学者对于是否存在一种方式将中医与西医两种学说统一起来存在争议。</li>
+</ol>
+<p>之所以列了这么多条，是因为“科学”这一概念的解释方式很多，这里只是采纳了主流的几种解释（可验证论、证伪论、科学共同体论）。如果您认同上面所说的所有条目，那么我们的观点是一致的。至于中医是不是科学，那取决于您如何定义“中医”与“科学”了。</p>
+<h3 id="该如何对待中医">该如何对待中医</h3>
+<p>医学与其他学科的不同在于，医学的学说建立存在着较大的滞后性。也就是说，无论是西医或者中医，都存在着大量无法解释的现象，也都存在很多不明机理但却有效的治疗方式。作为在一个存在大量未知现象的领域的一种学说体系，简单地说保留或者废除都是不合时宜的。其实完全可以按照市场化的方式，让其自己发展或者消亡。在某一领域，至少如果一种学说体系无法完全给出完整的解决方案之前，其他学说体系的存在都是有意义的。
+    <br>作为每天需要使用医学结论的普通人，在面对治疗方案时，其实是一个对于投资回报的判断：如果我按照这个治疗方案进行投资，那么我有多大的可能会获得这个治疗方案所宣称的结果。这个时候，你要考虑的不是那个在诸多限制条件下的学术上的结论。治疗方案提出者是否了解学说本身，安慰剂等诸多浮动效应有多大可能发生都是考察的对象。比如说，假如有这样的一个理论，它虽然完全不能自洽，但是按照这个理论的手段能够保证百分之百出现安慰剂效应（当然很可能是由于某个尚未发现的原因）从而治好你的病，你愿不愿意采用呢？再比如，有一个医学理论，可以百分之百治好你的病，但是能够准确理解这个理论的医生万里也挑不出一个来，你愿不愿意采用眼前的医生基于这个理论提出来的解决方案呢？所以，是否采纳中/西医的解决方案，跟上面那个“中医是不是科学”问题完全是两个问题。这是一个个人做出的判断，风险自担，跟别人无关（只是不管是哪一种解决方案，准确地了解是否已研究过副作用或者是否有已知的副作用是基本的权利）。</p>
+<h3 id="几个误区">几个误区</h3>
+<p>我们在思考问题的时候，经常会走入一些误区。准确地识别出它们，是独立思考的一个必要的步骤。</p>
+<ol>
+    <li>在一个学说体系中，曾经提出的一个学说，如果没有被现在该学说体系的主流学者认同，则并不能视为是该学说体系的一部分。比如亚里士多德曾提出力是维持物体匀速运动的原因，我们不能认为这是物理学所秉持的观点。因此，如果你发现某古医书里写治疟疾要让大公鸡喊两声，也不能认为这是中医的观点。</li>
+    <li>不能将一个学说的概念套用在另一个学说上并作为反驳的基础，这是因为两者问题定义不同。比如我们不能因为球面几何中不存在欧式几何中平行线这个概念而认为球面几何是错误的。因此，利用中药如果不能提供维生素就无法治疗维生素引发的疾病反驳中医也是没有道理的。</li>
+    <li>观察不到的概念不等于不存在。你不能因为观察不到某些微观粒子而否定某些量子物理学说，不能因为看不到插件而否定这一编程概念，同样你也不能因为无法从解剖中看不到经脉而否定它（当然你可以用其他方式来否定）。</li>
+    <li>表述方式原始的概念不等于不正确。有些概念有可能沿用了几千年，表述起来自然听起来不那么现代。但是概念是否正确跟这关系不大。比如苗这个概念用了上千年，却并不妨碍我们使用它来解释疫苗。中医的五行也并不是说你发烧的时候身体里就真的有物质在剧烈燃烧。只是如果一个学说体系想要得到发展，准确的阐释每个概念是非常必要的。</li>
+</ol>]]></content>
+    <summary type="html">
+    <![CDATA[最近也许是因为屠呦呦的诺贝尔获奖，千年大坑“中医是不是科学”又烽烟再起，争论愈演愈烈。思考良久，颇有心得，于是诉诸笔端。笔者知识有限，有些观点可能有误，欢迎斧正。]]>
+    
+    </summary>
+    
+      <category term="天天向上" scheme="http://sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+    
+      <category term="科学" scheme="http://sparkshining.com/tags/%E7%A7%91%E5%AD%A6/"/>
+    
+      <category term="思考" scheme="http://sparkshining.com/categories/%E6%80%9D%E8%80%83/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[通俗地解释第三方登录]]></title>
@@ -205,10 +321,8 @@
     <link href="http://sparkshining.com/2015/10/08/jsobject-serialization-deserialization/"/>
     <id>http://sparkshining.com/2015/10/08/jsobject-serialization-deserialization/</id>
     <published>2015-10-08T08:32:08.000Z</published>
-    <updated>2015-10-12T08:51:17.000Z</updated>
-    <content type="html"><![CDATA[<p>从今天起，我会争取每天就一个小技术点写一篇短文。
-    <br>闲言少叙，正式开始。</p>
-<p>先更正一个概念，JSON是一种数据表达的格式（见
+    <updated>2015-11-02T06:07:42.000Z</updated>
+    <content type="html"><![CDATA[<p>先更正一个概念，JSON是一种数据表达的格式（见
     <a href="http://www.ietf.org/rfc/rfc4627.txt" target="_blank" rel="external">RFC-4627</a>），就像我们平常说的xml、csv一样。它本身不是数据，也不依赖于具体编程语言。用.net、Java或者Python都能生成JSON格式的数据。
     <br>
     <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.12" target="_blank" rel="external">JSON对象(JSON Object)</a>(中文文档见

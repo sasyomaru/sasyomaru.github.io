@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>如何生成一个安全的随机数 - 顿悟</title>
+    <title>Lambda表达式中的arguments - 顿悟</title>
     <link rel="stylesheet" href="/css/app.css" type="text/css">
     <link rel="stylesheet" href="/css/foundation-icons/foundation-icons.css" type="text/css">
 </head>
@@ -30,7 +30,7 @@
     </header>
     <div class="container">
         <section id="main">
-            <h1 class="title">如何生成一个安全的随机数</h1>
+            <h1 class="title">Lambda表达式中的arguments</h1>
             <section class="categories-and-tags">
                 <span>本文发表于</span>
                 <a class="category-link" href="/categories/技术/">技术</a>
@@ -39,48 +39,64 @@
                 <a class="tag-link" href="/tags/天天向上/">天天向上</a>
             </section>
             <section class="main-content">
-                <p>提起随机数，大家的第一反应一般是Math.random。然而，
-                    <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.8.2.14" target="_blank" rel="external">ECMAScript里面</a>(中文版见
-                    <a href="http://lzw.me/pages/ecmascript/#457" target="_blank" rel="external">这里</a>)并没有规定用什么算法来实现这个API，只是规定了生成的数字应该在[0, 1)内近似均匀分布。这就使得很多引擎实现在实现时采用了比较简单地算法，并不保证随机数的不可预测。
-                    <br>这样的随机数显然不能用于数据加密。那么，有什么API可以获得一个安全的随机数呢？</p>
-                <p>如果是Node.js，你可以使用
-                    <a href="https://nodejs.org/api/crypto.html#crypto_crypto_randombytes_size_callback" target="_blank" rel="external">crypto.randomBytes(size[, callback])</a>这个API，比如下面的code获得了一个包含4个byte的随机数：
+                <p>最近在一个项目中遇到了这个坑，记下来，以警来者。</p>
+                <p>JavaScript在ES2015中初次引入了箭头函数（Arrow Function）这一俗称“lambda表达式”的概念，用来解决代码中this容易用错的问题（注意，this的定义从来就没有歧义，但确实是有点“反直觉”，容易被曾使用过其他语言的开发者误用）。想要了解这一特性，可以参阅
+                    <a href="http://es6.ruanyifeng.com/#docs/function" target="_blank" rel="external">这篇介绍ES6的文章</a>中“箭头函数”一节（原文中已对本文所述的问题做了介绍）。</p>
+                <p>在
+                    <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-arrow-function-definitions-runtime-semantics-evaluation" target="_blank" rel="external">ES2015语言规范</a>中，明确规定了箭头函数不定义arguments的本地绑定。换句话说，如果在箭头函数中使用了arguments，则其值为生成该函数的参数列表，比如下面代码：
                     <br>
                     <figure class="highlight javascript">
                         <table>
                             <tr>
                                 <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td>
-                                <td class="code"><pre><span class="line">crypto.randomBytes(<span class="number">4</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, buf</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">return</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(buf.length);</span><br><span class="line">  <span class="built_in">console</span>.log(buf[<span class="number">0</span>], buf[<span class="number">1</span>], buf[<span class="number">2</span>], buf[<span class="number">3</span>]);</span><br><span class="line">&#125;);</span><br></pre></td>
+                                <td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getFunction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> () =&gt; <span class="built_in">console</span>.log(<span class="built_in">arguments</span>[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> praise = getFunction(<span class="string">'You suck!'</span>);</span><br><span class="line">praise(<span class="string">'You are great!'</span>);</span><br></pre></td>
                             </tr>
                         </table>
                     </figure>
                 </p>
-                <p>那浏览器端怎么办呢，你可以使用
-                    <a href="http://www.w3.org/TR/WebCryptoAPI/#Crypto-method-getRandomValues" target="_blank" rel="external">crypto.getRandomValues(array)</a>这个API，现在很多浏览器都支持这个API了（具体浏览器支持情况请见
-                    <a href="http://caniuse.com/#feat=getrandomvalues" target="_blank" rel="external">这里</a>），比如下面的code获得了一个Uint32（4个byte）的随机数：
+                <p>如果在支持ES2015的浏览器（比如最新版的Chrome，笔者版本为46.0）上执行时你会发现，控制台会打印如下结果：
                     <br>
-                    <figure class="highlight javascript">
+                    <figure class="highlight">
                         <table>
                             <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td>
-                                <td class="code"><pre><span class="line"><span class="keyword">var</span> buffer = <span class="keyword">new</span> <span class="built_in">Uint32Array</span>(<span class="number">1</span>);</span><br><span class="line">crypto.getRandomValues(buffer);</span><br><span class="line"><span class="built_in">console</span>.log(buffer[<span class="number">0</span>]);</span><br></pre></td>
+                                <td class="gutter"><pre><span class="line">1</span><br></pre></td>
+                                <td class="code"><pre><span class="line">You suck!</span><br></pre></td>
                             </tr>
                         </table>
                     </figure>
                 </p>
-                <p>搞定，收工！</p>
+                <p>而不是直觉上的You are great!</p>
+                <p>本来这个问题比较简单，规范上面这么定义的，这么做就是了。偏偏有人来搅局了：在ES2015尚未发布之前，
+                    <a href="http://www.typescriptlang.org/" target="_blank" rel="external">TypeScript</a>（一个微软推出的语言，为JavaScript的超集，由于与Angular 2和React的合作而逐渐被人所知）就定义了类似的功能并最初起名为Lambda(现已改为采用跟ES2015一致的术语“箭头函数”，但截至笔者写作本文时，有些文档尚未更新，比如
+                    <a href="http://www.typescriptlang.org/Handbook#functions-lambdas-and-using-39this39" target="_blank" rel="external">这里</a>)。在TypeScript中，
+                    <strong>起初</strong>并未对Lambda中的arguments做任何处理，因此，arguments所指向的就是最终函数的参数列表。也就是说如果你在TypeScript中编写了上文的程序，得到的打印结果就是You are great!。
+                    <br>幸运的是，TypeScript的开发者即时地意识到了这一点（见
+                    <a href="https://github.com/Microsoft/TypeScript/issues/1609" target="_blank" rel="external">这个TypeScript问题</a>）。因此，如果在lambda中使用了arguments，你会得到如下的结果：</p>
+                <ol>
+                    <li>在Typsecript 1.5之前，该代码顺利通过编译，生成与E2015语义不一致的代码</li>
+                    <li>在TypeScript 1.5之后，如果编译目标是ES6，该代码会顺利通过编译，生成箭头函数</li>
+                    <li>在TypeScript 1.5之后，如果编译目标是ES3或者ES5，则该代码不会通过编译，错误如下：
+                        <figure class="highlight">
+                            <table>
+                                <tr>
+                                    <td class="gutter"><pre><span class="line">1</span><br></pre></td>
+                                    <td class="code"><pre><span class="line">error TS2496: The &#39;arguments&#39; object cannot be referenced in an arrow function in ES3 and ES5. Consider using a standard function expression.</span><br></pre></td>
+                                </tr>
+                            </table>
+                        </figure>
+                    </li>
+                </ol>
             </section>
             <section class="copyright">
                 <span>本文章版权声明：自由转载-非商用-非衍生-保持署名（</span>
                 <a href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank">知识共享Attribution-NoDerivatives 4.0 国际许可协议</a>
                 <span>）。原文地址：</span>
-                <a href="http://sparkshining.com/2015/10/09/js-safe-get-random/">http://sparkshining.com/2015/10/09/js-safe-get-random/</a>
+                <a href="http://sparkshining.com/2015/11/02/arguments-in-lambda/">http://sparkshining.com/2015/11/02/arguments-in-lambda/</a>
             </section>
             <section class="content-neighbors-link">
-                <a href="/2015/10/08/jsobject-serialization-deserialization/" class="next-link">&lt;&lt; 旧一篇: 自定义JS对象的序列化与反序列化过程</a>
-                <a href="/2015/10/10/introduction-to-zone-js/" class="prev-link">新一篇: zone.js简介 &gt;&gt;</a>
+                <a href="/2015/10/19/traditional-chinese-medical-science/" class="next-link">&lt;&lt; 旧一篇: 我的中医观</a>
             </section>
-            <div data-thread-key="js-safe-get-random" data-title="如何生成一个安全的随机数" data-url="http://sparkshining.com/2015/10/09/js-safe-get-random/" class="ds-thread"></div>
+            <div data-thread-key="arguments-in-lambda" data-title="Lambda表达式中的arguments" data-url="http://sparkshining.com/2015/11/02/arguments-in-lambda/" class="ds-thread"></div>
             <script type="text/javascript">
                 var duoshuoQuery = {
                     short_name: "sparkshining"
