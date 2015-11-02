@@ -5,7 +5,7 @@
   <subtitle><![CDATA[捕捉技术与生活中的灵感]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://sparkshining.com//"/>
-  <updated>2015-11-02T06:12:13.000Z</updated>
+  <updated>2015-11-02T06:22:41.000Z</updated>
   <id>http://sparkshining.com//</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://sparkshining.com/2015/11/02/arguments-in-lambda/"/>
     <id>http://sparkshining.com/2015/11/02/arguments-in-lambda/</id>
     <published>2015-11-02T06:07:58.000Z</published>
-    <updated>2015-11-02T06:12:13.000Z</updated>
+    <updated>2015-11-02T06:22:41.000Z</updated>
     <content type="html"><![CDATA[<p>最近在一个项目中遇到了这个坑，记下来，以警来者。</p>
 <p>JavaScript在ES2015中初次引入了箭头函数（Arrow Function）这一俗称“lambda表达式”的概念，用来解决代码中this容易用错的问题（注意，this的定义从来就没有歧义，但确实是有点“反直觉”，容易被曾使用过其他语言的开发者误用）。想要了解这一特性，可以参阅
     <a href="http://es6.ruanyifeng.com/#docs/function" target="_blank" rel="external">这篇介绍ES6的文章</a>中“箭头函数”一节（原文中已对本文所述的问题做了介绍）。</p>
@@ -55,7 +55,7 @@
     <br>幸运的是，TypeScript的开发者即时地意识到了这一点（见
     <a href="https://github.com/Microsoft/TypeScript/issues/1609" target="_blank" rel="external">这个TypeScript问题</a>）。因此，如果在lambda中使用了arguments，你会得到如下的结果：</p>
 <ol>
-    <li>在Typsecript 1.5之前，该代码顺利通过编译，生成与E2015语义不一致的代码</li>
+    <li>在TypeScript 1.5之前，该代码顺利通过编译，生成与E2015语义不一致的代码</li>
     <li>在TypeScript 1.5之后，如果编译目标是ES6，该代码会顺利通过编译，生成箭头函数</li>
     <li>在TypeScript 1.5之后，如果编译目标是ES3或者ES5，则该代码不会通过编译，错误如下：
         <figure class="highlight">

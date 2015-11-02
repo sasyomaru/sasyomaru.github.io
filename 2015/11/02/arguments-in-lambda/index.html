@@ -73,7 +73,7 @@
                     <br>幸运的是，TypeScript的开发者即时地意识到了这一点（见
                     <a href="https://github.com/Microsoft/TypeScript/issues/1609" target="_blank" rel="external">这个TypeScript问题</a>）。因此，如果在lambda中使用了arguments，你会得到如下的结果：</p>
                 <ol>
-                    <li>在Typsecript 1.5之前，该代码顺利通过编译，生成与E2015语义不一致的代码</li>
+                    <li>在TypeScript 1.5之前，该代码顺利通过编译，生成与E2015语义不一致的代码</li>
                     <li>在TypeScript 1.5之后，如果编译目标是ES6，该代码会顺利通过编译，生成箭头函数</li>
                     <li>在TypeScript 1.5之后，如果编译目标是ES3或者ES5，则该代码不会通过编译，错误如下：
                         <figure class="highlight">
