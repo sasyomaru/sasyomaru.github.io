@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sparkshining.com/"/>
-  <updated>2015-12-16T10:30:50.000Z</updated>
+  <updated>2016-05-16T10:15:16.000Z</updated>
   <id>http://sparkshining.com/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>经济危机中的倒牛奶行为</title>
-    <link href="http://sparkshining.com/2015/12/16/pour-milk/"/>
-    <id>http://sparkshining.com/2015/12/16/pour-milk/</id>
+    <link href="http://sparkshining.com/2015/12/16/dump-milk/"/>
+    <id>http://sparkshining.com/2015/12/16/dump-milk/</id>
     <published>2015-12-16T12:27:20.000Z</published>
-    <updated>2015-12-16T10:30:50.000Z</updated>
+    <updated>2016-05-16T10:15:16.000Z</updated>
     
     <content type="html">&lt;p&gt;最近在看经济学的书，确实脑洞大开。很多以前解释不清的问题，终于有了连贯的逻辑链条。&lt;/p&gt;
 &lt;p&gt;当年学马克思主义政治经济学的时候，那个经济危机中美国奶牛农场主把牛奶倒入海中的故事甚是触目惊心。然而，笔者完全无法认同“这反映了资本家剥削穷人的本质”这种观点。商人最懂得做顺水人情从而获取长远利益。因此，一定存在着一种理性且合乎逻辑的机制，来促成农场主做了如此的决策。&lt;/p&gt;
@@ -41,10 +41,12 @@
     
     </summary>
     
-      <category term="生活" scheme="http://sparkshining.com/categories/%E7%94%9F%E6%B4%BB/"/>
+      <category term="思考" scheme="http://sparkshining.com/categories/%E6%80%9D%E8%80%83/"/>
     
     
       <category term="天天向上" scheme="http://sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+    
+      <category term="经济学" scheme="http://sparkshining.com/tags/%E7%BB%8F%E6%B5%8E%E5%AD%A6/"/>
     
   </entry>
   
