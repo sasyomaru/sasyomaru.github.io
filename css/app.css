@@ -6608,8 +6608,6 @@ th.hide-for-touch {
       background-color: #548235; }
   #main .article .article-tags {
     font-size: 0.75rem;
-    border-top: 1pt solid #5B9BD5;
-    padding-top: 0.625rem;
     line-height: 1.6; }
     #main .article .article-tags span, #main .article .article-tags .tag-list-link {
       font-size: 0.75rem;
