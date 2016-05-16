@@ -1,248 +1,89 @@
-<!DOCTYPE html>
-<html lang="zh">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>zone.js简介 - 顿悟</title>
-    <link rel="stylesheet" href="/css/app.css" type="text/css">
-    <link rel="stylesheet" href="/css/foundation-icons/foundation-icons.css" type="text/css">
-</head>
-
-<body>
-    <header id="header">
-        <div class="top-bar">
-            <div class="toolbar">
-                <a href="/atom.xml" class="fi-rss"></a>
-                <a class="fi-magnifying-glass not-ready"></a>
-            </div>
-            <ul class="site-title-area">
-                <li class="site-title">
-                    <span>
-                        <a href="/">顿悟</a>
-                    </span>
-                </li>
-                <li class="site-subtitle">
-                    <span>- 捕捉技术与生活中的灵感</span>
-                </li>
-            </ul>
-        </div>
-    </header>
-    <div class="container">
-        <section id="main">
-            <h1 class="title">zone.js简介</h1>
-            <section class="categories-and-tags">
-                <span>本文发表于</span>
-                <a class="category-link" href="/categories/技术/">技术</a>
-                <span>栏目，标签：</span>
-                <a class="tag-link" href="/tags/JS/">JS</a>、
-                <a class="tag-link" href="/tags/天天向上/">天天向上</a>
-            </section>
-            <section class="main-content">
-                <p>当你使用Angular 2的时候，你会惊喜地发现你不再需要$rootScope.$apply了，即使你直接调用addEventListener挂载一个事件处理器偷偷修改了模型，也不需要通知Angular。Angular似乎能够“未卜先知”地知道你的所有小动作。这一切的功劳都归功于zone.js。</p>
-                <p>zone.js的github地址见
-                    <a href="https://github.com/angular/zone.js" target="_blank" rel="external">这里</a>。原代码库提供了一个
-                    <a href="https://www.youtube.com/watch?v=3IqtmUscE_U" target="_blank" rel="external">ng-conf上的video</a>(需翻墙)来解释这个库的背景。注意
-                    <strong>zone.js是一个独立的库，并不依赖于Angular</strong>，所以你无需担心被“某些别有用心的大户”挟持了。</p>
-                <p>简单地说，zone.js允许你为一段代码及其衍生出的代码提供了一个统一的上下文（zone.js称之为zone）。这个概念类似Node中的domain或者Java中的thread locals。
-                    <br>能够在源于同一段代码的有着不同stack trace的程序间共享数据是一件很诱人的事情。比如说，你想统计程序的执行时间，然而你却有这样的一段奇葩程序：它自己要执行1秒，并且触发一个异步的操作；这个异步的操作又执行了3秒。如果你能够在这两段程序间共享数据，这个问题就简单多了。
-                    <br>当然，你完全可以自己通过给每个入口的地方都加入一段代码的方式来解决这个问题，但是你会更希望能够使用一种类似zone.js提供的这种“面向切面”的优雅解决方案。</p>
-                <p>首先，如果用这样的方式来运行你的程序：
-                    <br>
-                    <figure class="highlight javascript">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br></pre></td>
-                                <td class="code"><pre><span class="line">zone.run(yourCode);</span><br></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>这样你的这段代码以及其衍生的代码，包括：</p>
-                <ol>
-                    <li>它注册的浏览器事件处理器</li>
-                    <li>它通过setTimeout和setInterval在未来执行的代码</li>
-                </ol>
-                <p>以及衍生代码所衍生的代码就共享一个zone了。</p>
-                <p>那么，怎么使用这个zone呢？你可以通过类似下面这段代码这样通过zone.fork来插入一些监听器：
-                    <br>
-                    <figure class="highlight javascript">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td>
-                                <td class="code"><pre><span class="line">zone.fork(&#123;</span><br><span class="line">  beforeTask: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在每段代码执行前都会执行的代码</span></span><br><span class="line">  &#125;,</span><br><span class="line">  afterTask: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在每段代码执行后都会执行的代码</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).run(youCode);</span><br></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>比如，在beforeTask记录下开始时间，afterTask时记录下结束时间、与开始时间比较算出执行时间并且累加，你就可以解决前文说过的那个问题了。本文开头的Angular 2的$rootScope.$apply的迷雾也就解开了，因为Angular 2使用了zone并且在afterTask时帮你执行这个了。</p>
-                <p>zone.js的实现原理很简单，就是mock掉你的每个入口位置。多么地简单粗暴啊！但是非常有效。</p>
-                <p>说了这么多，来看一个最最简单地例子吧：我们想在每次执行代码(主函数、事件监听函数和setTimeout加入的macrotask)的前后各打印一行log。</p>
-                <p>首先，我们新创建一个空文件夹来装例子所需的文件。
-                    <br>然后，因为zone支持bower，我们通过在该文件夹中运行下面的命令(有关bower使用，请见
-                    <a href="http://bower.io/#getting-started" target="_blank" rel="external">这里</a>)下载zone：
-                    <br>
-                    <figure class="highlight bash">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br></pre></td>
-                                <td class="code"><pre><span class="line">bower install zone</span><br></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>然后，在目录下创建index.html文件。那么默认情况下，相对于html文件，zone.js文件的位置应该是”bower_components/zone/dist/zone.js”。html文件内容如下
-                    <br>
-                    <figure class="highlight html">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td>
-                                <td class="code"><pre><span class="line"><span class="doctype">&lt;!doctype html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">title</span>&gt;</span>Zone.js Basic Demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"./bower_components/zone/dist/zone.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="title">h1</span>&gt;</span>Basic Example<span class="tag">&lt;/<span class="title">h1</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">"trigger"</span>&gt;</span>Run async code<span class="tag">&lt;/<span class="title">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     * This is a simple example of async stack traces with zones</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Run main'</span>);</span><br><span class="line">        trigger.addEventListener(<span class="string">'click'</span>, clickHandler);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">clickHandler</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Run click handler'</span>);</span><br><span class="line"></span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'Run macro task'</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     * Bootstrap the app</span><br><span class="line">     */</span></span><br><span class="line">    zone.fork(&#123;</span><br><span class="line">        beforeTask: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'Enter zone'</span>);</span><br><span class="line">        &#125;,</span><br><span class="line">        afterTask: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'Leave zone'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).run(main);</span><br><span class="line"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">html</span>&gt;</span></span><br></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>然后你可以用类似
-                    <a href="https://github.com/indexzero/http-server" target="_blank" rel="external">http-server</a>的方法来部署这个文件并用浏览器访问。
-                    <br>在页面加载后，你会在控制台看到如下信息
-                    <br>
-                    <figure class="highlight python">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td>
-                                <td class="code"><pre><span class="line">Enter zone</span><br><span class="line">Run main</span><br><span class="line">Leave zone</span><br></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>当点击页面中的按钮时，控制台会打印如下信息
-                    <br>
-                    <figure class="highlight python">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td>
-                                <td class="code"><pre><span class="line">Enter zone</span><br><span class="line">Run click handler</span><br><span class="line">Leave zone</span><br><span class="line">Enter zone</span><br><span class="line">Run macro task</span><br><span class="line">Leave zone</span><br></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>值得指出的是，zone.js那个文件本身并不支持microtask（有关macrotask和microtask，日后我会专门写一篇文章来解释）。如果想支持microtask，你需要使用库里面的zone-microtask.js。这个文件比zone.js大很多，主要的原因是它用es6-promise完全替换掉了浏览器内置的Promise。</p>
-            </section>
-            <section class="copyright">
-                <span>本文章版权声明：自由转载-非商用-非衍生-保持署名（</span>
-                <a href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank">知识共享Attribution-NoDerivatives 4.0 国际许可协议</a>
-                <span>）。原文地址：</span>
-                <a href="http://sparkshining.com/2015/10/10/introduction-to-zone-js/">http://sparkshining.com/2015/10/10/introduction-to-zone-js/</a>
-            </section>
-            <section class="content-neighbors-link">
-                <a href="/2015/10/09/js-safe-get-random/" class="next-link">&lt;&lt; 旧一篇: 如何生成一个安全的随机数</a>
-                <a href="/2015/10/14/common-third-party-authentication/" class="prev-link">新一篇: 通俗地解释第三方登录 &gt;&gt;</a>
-            </section>
-            <div data-thread-key="introduction-to-zone-js" data-title="zone.js简介" data-url="http://sparkshining.com/2015/10/10/introduction-to-zone-js/" class="ds-thread"></div>
-            <script type="text/javascript">
-                var duoshuoQuery = {
-                    short_name: "sparkshining"
-                };
-            </script>
-            <script type="text/javascript" async src="//static.duoshuo.com/embed.js" charset="UTF-8"></script>
-        </section>
-        <aside id="sidebar">
-            <div class="widgets">
-                <section class="widget me">
-                    <img src="/images/avatar.png" class="avatar">
-                    <div class="introduction">流星泉，一个热爱技术、热爱生活的人，目前就职于Blackboard</div>
-                    <div class="social-media">
-                        <a href="mailto:spark.liu.1984@gmail.com" class="fi-mail"></a>
-                        <a href="skype:live:spark.liu?add" class="fi-social-skype"></a>
-                        <a href="http://cn.linkedin.com/in/sparkliu1984" target="_blank" class="fi-social-linkedin"></a>
-                        <a href="https://github.com/sasyomaru" target="_blank" class="fi-social-github"></a>
-                    </div>
-                </section>
-                <section class="widget categories">
-                    <div class="fi-list list-name">分类</div>
-                    <ul class="category-list">
-                        <li class="category-list-item">
-                            <a class="category-list-link" href="/categories/思考/">思考</a>
-                            <span class="category-list-count">1</span>
-                        </li>
-                        <li class="category-list-item">
-                            <a class="category-list-link" href="/categories/技术/">技术</a>
-                            <span class="category-list-count">5</span>
-                        </li>
-                        <li class="category-list-item">
-                            <a class="category-list-link" href="/categories/生活/">生活</a>
-                            <span class="category-list-count">1</span>
-                        </li>
-                    </ul>
-                </section>
-                <section class="widget recent">
-                    <div class="fi-list list-name">近期文章</div>
-                    <ul class="post-list">
-                        <li class="post-list-item">
-                            <a class="post-list-link" href="/2015/11/02/arguments-in-lambda/">Lambda表达式中的arguments</a>
-                        </li>
-                        <li class="post-list-item">
-                            <a class="post-list-link" href="/2015/10/19/traditional-chinese-medical-science/">我的中医观</a>
-                        </li>
-                        <li class="post-list-item">
-                            <a class="post-list-link" href="/2015/10/14/common-third-party-authentication/">通俗地解释第三方登录</a>
-                        </li>
-                        <li class="post-list-item">
-                            <a class="post-list-link" href="/2015/10/10/introduction-to-zone-js/">zone.js简介</a>
-                        </li>
-                        <li class="post-list-item">
-                            <a class="post-list-link" href="/2015/10/09/js-safe-get-random/">如何生成一个安全的随机数</a>
-                        </li>
-                        <li class="post-list-item">
-                            <a class="post-list-link" href="/2015/10/08/jsobject-serialization-deserialization/">自定义JS对象的序列化与反序列化过程</a>
-                        </li>
-                    </ul>
-                </section>
-                <section class="widget all-tags">
-                    <div class="fi-list list-name">标签</div>
-                    <ul class="tag-list">
-                        <li class="tag-list-item">
-                            <a class="tag-list-link" href="/tags/JS/">JS</a>
-                        </li>
-                        <li class="tag-list-item">
-                            <a class="tag-list-link" href="/tags/天天向上/">天天向上</a>
-                        </li>
-                        <li class="tag-list-item">
-                            <a class="tag-list-link" href="/tags/模型解释/">模型解释</a>
-                        </li>
-                        <li class="tag-list-item">
-                            <a class="tag-list-link" href="/tags/瞎扯/">瞎扯</a>
-                        </li>
-                        <li class="tag-list-item">
-                            <a class="tag-list-link" href="/tags/科学/">科学</a>
-                        </li>
-                    </ul>
-                </section>
-                <section class="widget archives">
-                    <div class="fi-list list-name">归档</div>
-                    <ul class="archive-list">
-                        <li class="archive-list-item">
-                            <a class="archive-list-link" href="/archives/2015/11/">2015年11月</a>
-                            <span class="archive-list-count">1</span>
-                        </li>
-                        <li class="archive-list-item">
-                            <a class="archive-list-link" href="/archives/2015/10/">2015年10月</a>
-                            <span class="archive-list-count">5</span>
-                        </li>
-                        <li class="archive-list-item">
-                            <a class="archive-list-link" href="/archives/2015/08/">2015年8月</a>
-                            <span class="archive-list-count">1</span>
-                        </li>
-                    </ul>
-                </section>
-            </div>
-        </aside>
-    </div>
-    <footer id="footer">
-        <div class="bottom-bar">
-            <div class="copyright">SparkShining版权所有</div>
-        </div>
-    </footer>
-</body>
-
-</html>
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>zone.js简介 - 顿悟</title><link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/foundation-icons/foundation-icons.css"></head><body><header id="header"><div class="top-bar"><div class="toolbar"><a href="/atom.xml" class="fi-rss"></a><a class="fi-magnifying-glass not-ready"></a></div><ul class="site-title-area"><li class="site-title"><span><a href="/">顿悟</a></span></li><li class="site-subtitle"><span>- 捕捉技术与生活中的灵感</span></li></ul></div></header><div class="container"><section id="main"><h1 class="title">zone.js简介</h1><section class="categories-and-tags"><span>本文发表于</span><a class="category-link" href="/categories/技术/">技术</a><span>栏目，标签：</span><a class="tag-link" href="/tags/JS/">JS</a>、<a class="tag-link" href="/tags/天天向上/">天天向上</a></section><section class="main-content"><p>当你使用Angular 2的时候，你会惊喜地发现你不再需要$rootScope.$apply了，即使你直接调用addEventListener挂载一个事件处理器偷偷修改了模型，也不需要通知Angular。Angular似乎能够“未卜先知”地知道你的所有小动作。这一切的功劳都归功于zone.js。</p>
+<p>zone.js的github地址见
+    <a href="https://github.com/angular/zone.js" target="_blank" rel="external">这里</a>。原代码库提供了一个
+    <a href="https://www.youtube.com/watch?v=3IqtmUscE_U" target="_blank" rel="external">ng-conf上的video</a>(需翻墙)来解释这个库的背景。注意
+    <strong>zone.js是一个独立的库，并不依赖于Angular</strong>，所以你无需担心被“某些别有用心的大户”挟持了。</p>
+<p>简单地说，zone.js允许你为一段代码及其衍生出的代码提供了一个统一的上下文（zone.js称之为zone）。这个概念类似Node中的domain或者Java中的thread locals。
+    <br>能够在源于同一段代码的有着不同stack trace的程序间共享数据是一件很诱人的事情。比如说，你想统计程序的执行时间，然而你却有这样的一段奇葩程序：它自己要执行1秒，并且触发一个异步的操作；这个异步的操作又执行了3秒。如果你能够在这两段程序间共享数据，这个问题就简单多了。
+    <br>当然，你完全可以自己通过给每个入口的地方都加入一段代码的方式来解决这个问题，但是你会更希望能够使用一种类似zone.js提供的这种“面向切面”的优雅解决方案。</p>
+<p>首先，如果用这样的方式来运行你的程序：
+    <br>
+    <figure class="highlight javascript">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br></pre></td>
+                <td class="code"><pre><span class="line">zone.run(yourCode);</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>这样你的这段代码以及其衍生的代码，包括：</p>
+<ol>
+    <li>它注册的浏览器事件处理器</li>
+    <li>它通过setTimeout和setInterval在未来执行的代码</li>
+</ol>
+<p>以及衍生代码所衍生的代码就共享一个zone了。</p>
+<p>那么，怎么使用这个zone呢？你可以通过类似下面这段代码这样通过zone.fork来插入一些监听器：
+    <br>
+    <figure class="highlight javascript">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td>
+                <td class="code"><pre><span class="line">zone.fork(&#123;</span><br><span class="line">  beforeTask: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在每段代码执行前都会执行的代码</span></span><br><span class="line">  &#125;,</span><br><span class="line">  afterTask: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在每段代码执行后都会执行的代码</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).run(youCode);</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>比如，在beforeTask记录下开始时间，afterTask时记录下结束时间、与开始时间比较算出执行时间并且累加，你就可以解决前文说过的那个问题了。本文开头的Angular 2的$rootScope.$apply的迷雾也就解开了，因为Angular 2使用了zone并且在afterTask时帮你执行这个了。</p>
+<p>zone.js的实现原理很简单，就是mock掉你的每个入口位置。多么地简单粗暴啊！但是非常有效。</p>
+<p>说了这么多，来看一个最最简单地例子吧：我们想在每次执行代码(主函数、事件监听函数和setTimeout加入的macrotask)的前后各打印一行log。</p>
+<p>首先，我们新创建一个空文件夹来装例子所需的文件。
+    <br>然后，因为zone支持bower，我们通过在该文件夹中运行下面的命令(有关bower使用，请见
+    <a href="http://bower.io/#getting-started" target="_blank" rel="external">这里</a>)下载zone：
+    <br>
+    <figure class="highlight bash">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br></pre></td>
+                <td class="code"><pre><span class="line">bower install zone</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>然后，在目录下创建index.html文件。那么默认情况下，相对于html文件，zone.js文件的位置应该是”bower_components/zone/dist/zone.js”。html文件内容如下
+    <br>
+    <figure class="highlight html">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td>
+                <td class="code"><pre><span class="line"><span class="meta">&lt;!doctype html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Zone.js Basic Demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"./bower_components/zone/dist/zone.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Basic Example<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"trigger"</span>&gt;</span>Run async code<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     * This is a simple example of async stack traces with zones</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Run main'</span>);</span><br><span class="line">        trigger.addEventListener(<span class="string">'click'</span>, clickHandler);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">clickHandler</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Run click handler'</span>);</span><br><span class="line"></span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'Run macro task'</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     * Bootstrap the app</span><br><span class="line">     */</span></span><br><span class="line">    zone.fork(&#123;</span><br><span class="line">        beforeTask: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'Enter zone'</span>);</span><br><span class="line">        &#125;,</span><br><span class="line">        afterTask: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'Leave zone'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).run(main);</span><br><span class="line"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>然后你可以用类似
+    <a href="https://github.com/indexzero/http-server" target="_blank" rel="external">http-server</a>的方法来部署这个文件并用浏览器访问。
+    <br>在页面加载后，你会在控制台看到如下信息
+    <br>
+    <figure class="highlight python">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td>
+                <td class="code"><pre><span class="line">Enter zone</span><br><span class="line">Run main</span><br><span class="line">Leave zone</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>当点击页面中的按钮时，控制台会打印如下信息
+    <br>
+    <figure class="highlight python">
+        <table>
+            <tr>
+                <td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td>
+                <td class="code"><pre><span class="line">Enter zone</span><br><span class="line">Run click handler</span><br><span class="line">Leave zone</span><br><span class="line">Enter zone</span><br><span class="line">Run macro task</span><br><span class="line">Leave zone</span><br></pre></td>
+            </tr>
+        </table>
+    </figure>
+</p>
+<p>值得指出的是，zone.js那个文件本身并不支持microtask（有关macrotask和microtask，日后我会专门写一篇文章来解释）。如果想支持microtask，你需要使用库里面的zone-microtask.js。这个文件比zone.js大很多，主要的原因是它用es6-promise完全替换掉了浏览器内置的Promise。</p></section><section class="copyright"><span>本文章版权声明：自由转载-非商用-非衍生-保持署名（</span><a href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank">知识共享Attribution-NoDerivatives 4.0 国际许可协议</a><span>）。原文地址：</span><a href="http://sparkshining.com/2015/10/10/introduction-to-zone-js/">http://sparkshining.com/2015/10/10/introduction-to-zone-js/</a></section><section class="content-neighbors-link"><a href="/2015/10/09/js-safe-get-random/" class="next-link">&lt;&lt; 旧一篇: 如何生成一个安全的随机数</a><a href="/2015/10/14/common-third-party-authentication/" class="prev-link">新一篇: 通俗地解释第三方登录 &gt;&gt;</a></section><div data-thread-key="introduction-to-zone-js" data-title="zone.js简介" data-url="http://sparkshining.com/2015/10/10/introduction-to-zone-js/" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "sparkshining"};</script><script type="text/javascript" async src="//static.duoshuo.com/embed.js" charset="UTF-8"></script></section><aside id="sidebar"><div class="widgets"><section class="widget me"><img src="/images/avatar.png" class="avatar"><div class="introduction">流星泉，一个热爱技术、热爱生活的人，目前就职于Blackboard</div><div class="social-media"><a href="mailto:spark.liu.1984@gmail.com" class="fi-mail"></a><a href="skype:live:spark.liu?add" class="fi-social-skype"></a><a href="http://cn.linkedin.com/in/sparkliu1984" target="_blank" class="fi-social-linkedin"></a><a href="https://github.com/sasyomaru" target="_blank" class="fi-social-github"></a></div></section><section class="widget categories"><div class="fi-list list-name">分类</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/思考/">思考</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术/">技术</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">2</span></li></ul></section><section class="widget recent"><div class="fi-list list-name">近期文章</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2015/12/16/pour-milk/">经济危机中的倒牛奶行为</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/11/02/arguments-in-lambda/">Lambda表达式中的arguments</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/10/19/traditional-chinese-medical-science/">我的中医观</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/10/14/common-third-party-authentication/">通俗地解释第三方登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/10/10/introduction-to-zone-js/">zone.js简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/10/09/js-safe-get-random/">如何生成一个安全的随机数</a></li></ul></section><section class="widget all-tags"><div class="fi-list list-name">标签</div><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS/">JS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/天天向上/">天天向上</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/模型解释/">模型解释</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/瞎扯/">瞎扯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/科学/">科学</a></li></ul></section><section class="widget archives"><div class="fi-list list-name">归档</div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">2015年10月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">2015年8月</a><span class="archive-list-count">1</span></li></ul></section></div></aside></div><footer id="footer"><div class="bottom-bar"><div class="copyright">SparkShining版权所有</div></div></footer></body></html>
