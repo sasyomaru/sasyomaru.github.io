@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>浏览器兼容之聚焦相关的事件 - 顿悟</title><link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/foundation-icons/foundation-icons.css"></head><body><header id="header"><div class="top-bar"><div class="toolbar"><a href="/atom.xml" class="fi-rss"></a><a class="fi-magnifying-glass not-ready"></a></div><ul class="site-title-area"><li class="site-title"><span><a href="/">顿悟</a></span></li><li class="site-subtitle"><span>- 捕捉技术与生活中的灵感</span></li></ul></div></header><div class="container"><section id="main"><h1 class="title">浏览器兼容之聚焦相关的事件</h1><section class="categories-and-tags"><span>本文发表于</span><a class="category-link" href="/categories/技术/">技术</a><span>栏目，标签：</span><a class="tag-link" href="/tags/前端开发/">前端开发</a>、<a class="tag-link" href="/tags/天天向上/">天天向上</a></section><section class="main-content"><p>常年做前端，哪能不恶心？虽然这两年浏览器兼容性是越来越好了，但还是会偶尔遇到一些其他问题，让你欲哭无泪，求死不能。今天我们就来八一八浏览器中跟聚焦（focus）有关的事件。
+    <br>这个世界上有两种人：使鼠标的和使键盘的。鼠标是二维定位，精确度高；键盘是十个输入（像我爸爸那样的修炼二指禅的除外），速度非常。正因为各有利弊，所以虽然双方都看对方不太顺眼，也只能凑合着过。
+    <br>焦点这一设计是为键盘使用者准备的：当你双手飞速敲打键盘的时候，有一个问题也就来了：电脑怎么知道你在往哪儿输入呢？于是，在网页中，我们定义了一个激活元素（active element)，键盘输入都是发往这个元素的。当用户用鼠标点击另一个可聚焦的元素或者按Tab键时，网页激活的元素也会响应的发生变化。</p>
+<p>在浏览器中，跟焦点有关的API有以下这些(见
+    <a href="https://w3c.github.io/html/index.html" target="_blank" rel="external">HTML5 Editor’s draft</a>)：
+    <br>1个属性——document.activeElement，用于获取文档中当前获得焦点的元素
+    <br>1个方法——element.focus()，用于让元素获得焦点
+    <br>若干
+    <a href="https://www.w3.org/TR/uievents/#events-focusevent" target="_blank" rel="external">事件</a>——blur, focus, focusin, focusout</p>
+<p>现在让我们看看各浏览器的表现吧。为了易于对比，笔者使用了Chrome 50, Firefox 46, IE 11和Edge 20作为测试对象。Safari因为跟Chrome采用同样的引擎，因此结果与Chrome 50完全一致，这里不单独列出。测试代码见
+    <a href="https://jsfiddle.net/sasyomaru/yamkxf26/" target="_blank" rel="external">这里</a>。</p>
+<h4 id="测试1-鼠标点击改变焦点">
+    <a href="#测试1-鼠标点击改变焦点" class="headerlink" title="测试1 鼠标点击改变焦点"></a>测试1 鼠标点击改变焦点</h4>
+<p>初始时焦点位于输入框1上，通过点击输入框2将焦点移到它上面。</p>
+<p>各浏览器中事件触发先后顺序如下：</p>
+<table>
+    <thead>
+        <tr>
+            <th>浏览器</th>
+            <th>事件链</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Chrome 50</td>
+            <td>输入框2上mousedown -&gt; 输入框1上blur -&gt; 输入框1上focusout -&gt; 输入框2上focus -&gt; 输入框2上focusin -&gt; 输入框2上mouseup -&gt; 输入框2上click</td>
+        </tr>
+        <tr>
+            <td>Firefox 46</td>
+            <td>输入框2上mousedown -&gt; 输入框1上blur -&gt; 输入框2上focus -&gt; 输入框2上mouseup -&gt; 输入框2上click</td>
+        </tr>
+        <tr>
+            <td>IE 11</td>
+            <td>输入框2上mousedown -&gt; 输入框1上focusout -&gt; 输入框2上focusin -&gt; 输入框1上blur -&gt; 输入框2上focus -&gt; 输入框2上mouseup -&gt; 输入框2上click</td>
+        </tr>
+        <tr>
+            <td>Edge 20</td>
+            <td>输入框2上mousedown -&gt; 输入框1上focusout -&gt; 输入框1上blur -&gt; 输入框2上focus -&gt; 输入框2上focusin -&gt; 输入框2上mouseup -&gt; 输入框2上click</td>
+        </tr>
+    </tbody>
+</table>
+<p>所有浏览器的焦点转移行为都发生在鼠标压下的阶段（mousedown），鼠标抬起（mouseup）对焦点没有任何影响。
+    <br>可以看出主要分歧在于focusout和focusin的触发时间，Chrome认为两者只是相应事件（blur和focus）的冒泡版本，因此在相应事件后触发；而IE认为两者其实是预览事件（preview），因此在相应事件前触发；Edge是一个折中；而Firefox干脆就没有这两个事件（莫非因为看不清楚趋势，先明哲保身一下？）。
+    <br>值得一提的是，还未定稿的
+    <a href="https://www.w3.org/TR/uievents/#events-focusevent-event-order" target="_blank" rel="external">界面事件规范</a>中的定义，似乎与IE的行为更为一致。</p>
+<p>那么，在这么多事件当中（mousedown / mouseup / click，focus / blur / focusin / focusout），焦点到底是什么时候转移的呢？
+    <br>这个问题上，浏览器自动分为了两个阵营：IE（包括Edge）一方当focusout触发的时候，焦点就已经转移到了新的输入框上；非IE（Firefox / Chrome）一方在失去焦点阶段内，焦点先回到默认值body上，而在获得焦点阶段，焦点才会转移到新的输入框上。</p>
+<p>与所有其他浏览器都不同，IE 11默认情况下所有display为block或者table的元素都可以获得焦点。但Edge却与Chrome等非IE浏览器一致，典型的兄弟反水啊。</p>
+<h4 id="测试2-Tab键改变焦点">
+    <a href="#测试2-Tab键改变焦点" class="headerlink" title="测试2 Tab键改变焦点"></a>测试2 Tab键改变焦点</h4>
+<p>初始时焦点位于输入框1上，通过按下键盘上Tab键将焦点移到下一个输入框（输入框2）上</p>
+<p>各大浏览器的事件触发与鼠标改变焦点基本一致，只不过触发的是keydown和keyup，而不是mousedown或mouseup，也没有click事件。不过这中间还是有两点值得注意的。</p>
+<ol>
+    <li>Firefox 46会在紧随着keydown之后，再触发一次keypress；而其他浏览器不会。</li>
+    <li>如果是按住Tab键进行连续的焦点改变时，会在每个聚焦元素上分别触发keydown（Firefox会额外触发keypress），但是除最后一次外不会触发keyup事件。</li>
+</ol>
+<p>笔者试图寻找规范中的定义，可以没有找到。其实这也正常，定义规范本就是一个特别繁杂的工程，难免挂一漏万。更何况规范定义好了，各家浏览器厂商是否执行还是个未知数。HTML5搞出来两套不就是因为大家没法一起玩的结果么？论天下大事，分久必合，合久必分，习惯就好。</p></section><section class="copyright"><span>本文章版权声明：自由转载-非商用-非衍生-保持署名（</span><a href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank">知识共享Attribution-NoDerivatives 4.0 国际许可协议</a><span>）。原文地址：</span><a href="http://sparkshining.com/2016/05/31/focus-management-in-browsers/">http://sparkshining.com/2016/05/31/focus-management-in-browsers/</a></section><section class="content-neighbors-link"><a href="/2015/12/16/dump-milk/" class="next-link">&lt;&lt; 旧一篇: 经济危机中的倒牛奶行为</a></section><div data-thread-key="focus-management-in-browsers" data-title="浏览器兼容之聚焦相关的事件" data-url="http://sparkshining.com/2016/05/31/focus-management-in-browsers/" class="ds-thread"></div><script type="text/javascript">var duoshuoQuery = {short_name: "sparkshining"};</script><script type="text/javascript" async src="//static.duoshuo.com/embed.js" charset="UTF-8"></script></section><aside id="sidebar"><div class="widgets"><section class="widget me"><img src="/images/avatar.png" class="avatar"><div class="introduction">流星泉，一个热爱技术、热爱生活的人，目前就职于Blackboard</div><div class="social-media"><a href="mailto:spark.liu.1984@gmail.com" class="fi-mail"></a><a href="skype:live:spark.liu?add" class="fi-social-skype"></a><a href="http://cn.linkedin.com/in/sparkliu1984" target="_blank" class="fi-social-linkedin"></a><a href="https://github.com/sasyomaru" target="_blank" class="fi-social-github"></a></div></section><section class="widget categories"><div class="fi-list list-name">分类</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/思考/">思考</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术/">技术</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">1</span></li></ul></section><section class="widget recent"><div class="fi-list list-name">近期文章</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/05/31/focus-management-in-browsers/">浏览器兼容之聚焦相关的事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/12/16/dump-milk/">经济危机中的倒牛奶行为</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/11/02/arguments-in-lambda/">Lambda表达式中的arguments</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/10/19/traditional-chinese-medical-science/">我的中医观</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/10/14/common-third-party-authentication/">通俗地解释第三方登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/10/10/introduction-to-zone-js/">zone.js简介</a></li></ul></section><section class="widget all-tags"><div class="fi-list list-name">标签</div><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS/">JS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端开发/">前端开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/天天向上/">天天向上</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/模型解释/">模型解释</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/瞎扯/">瞎扯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/科学/">科学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经济学/">经济学</a></li></ul></section><section class="widget archives"><div class="fi-list list-name">归档</div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年5月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">2015年10月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">2015年8月</a><span class="archive-list-count">1</span></li></ul></section></div></aside></div><footer id="footer"><div class="bottom-bar"><div class="copyright">SparkShining版权所有</div></div></footer></body></html>

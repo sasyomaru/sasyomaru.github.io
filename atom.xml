@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sparkshining.com/"/>
-  <updated>2016-05-16T10:15:16.000Z</updated>
+  <updated>2016-05-31T02:43:23.000Z</updated>
   <id>http://sparkshining.com/</id>
   
   <author>
@@ -14,6 +14,86 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>浏览器兼容之聚焦相关的事件</title>
+    <link href="http://sparkshining.com/2016/05/31/focus-management-in-browsers/"/>
+    <id>http://sparkshining.com/2016/05/31/focus-management-in-browsers/</id>
+    <published>2016-05-31T00:28:49.000Z</published>
+    <updated>2016-05-31T02:43:23.000Z</updated>
+    
+    <content type="html">&lt;p&gt;常年做前端，哪能不恶心？虽然这两年浏览器兼容性是越来越好了，但还是会偶尔遇到一些其他问题，让你欲哭无泪，求死不能。今天我们就来八一八浏览器中跟聚焦（focus）有关的事件。
+    &lt;br&gt;这个世界上有两种人：使鼠标的和使键盘的。鼠标是二维定位，精确度高；键盘是十个输入（像我爸爸那样的修炼二指禅的除外），速度非常。正因为各有利弊，所以虽然双方都看对方不太顺眼，也只能凑合着过。
+    &lt;br&gt;焦点这一设计是为键盘使用者准备的：当你双手飞速敲打键盘的时候，有一个问题也就来了：电脑怎么知道你在往哪儿输入呢？于是，在网页中，我们定义了一个激活元素（active element)，键盘输入都是发往这个元素的。当用户用鼠标点击另一个可聚焦的元素或者按Tab键时，网页激活的元素也会响应的发生变化。&lt;/p&gt;
+&lt;p&gt;在浏览器中，跟焦点有关的API有以下这些(见
+    &lt;a href=&quot;https://w3c.github.io/html/index.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;HTML5 Editor’s draft&lt;/a&gt;)：
+    &lt;br&gt;1个属性——document.activeElement，用于获取文档中当前获得焦点的元素
+    &lt;br&gt;1个方法——element.focus()，用于让元素获得焦点
+    &lt;br&gt;若干
+    &lt;a href=&quot;https://www.w3.org/TR/uievents/#events-focusevent&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;事件&lt;/a&gt;——blur, focus, focusin, focusout&lt;/p&gt;
+&lt;p&gt;现在让我们看看各浏览器的表现吧。为了易于对比，笔者使用了Chrome 50, Firefox 46, IE 11和Edge 20作为测试对象。Safari因为跟Chrome采用同样的引擎，因此结果与Chrome 50完全一致，这里不单独列出。测试代码见
+    &lt;a href=&quot;https://jsfiddle.net/sasyomaru/yamkxf26/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;这里&lt;/a&gt;。&lt;/p&gt;
+&lt;h4 id=&quot;测试1-鼠标点击改变焦点&quot;&gt;
+    &lt;a href=&quot;#测试1-鼠标点击改变焦点&quot; class=&quot;headerlink&quot; title=&quot;测试1 鼠标点击改变焦点&quot;&gt;&lt;/a&gt;测试1 鼠标点击改变焦点&lt;/h4&gt;
+&lt;p&gt;初始时焦点位于输入框1上，通过点击输入框2将焦点移到它上面。&lt;/p&gt;
+&lt;p&gt;各浏览器中事件触发先后顺序如下：&lt;/p&gt;
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;浏览器&lt;/th&gt;
+            &lt;th&gt;事件链&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Chrome 50&lt;/td&gt;
+            &lt;td&gt;输入框2上mousedown -&amp;gt; 输入框1上blur -&amp;gt; 输入框1上focusout -&amp;gt; 输入框2上focus -&amp;gt; 输入框2上focusin -&amp;gt; 输入框2上mouseup -&amp;gt; 输入框2上click&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Firefox 46&lt;/td&gt;
+            &lt;td&gt;输入框2上mousedown -&amp;gt; 输入框1上blur -&amp;gt; 输入框2上focus -&amp;gt; 输入框2上mouseup -&amp;gt; 输入框2上click&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;IE 11&lt;/td&gt;
+            &lt;td&gt;输入框2上mousedown -&amp;gt; 输入框1上focusout -&amp;gt; 输入框2上focusin -&amp;gt; 输入框1上blur -&amp;gt; 输入框2上focus -&amp;gt; 输入框2上mouseup -&amp;gt; 输入框2上click&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Edge 20&lt;/td&gt;
+            &lt;td&gt;输入框2上mousedown -&amp;gt; 输入框1上focusout -&amp;gt; 输入框1上blur -&amp;gt; 输入框2上focus -&amp;gt; 输入框2上focusin -&amp;gt; 输入框2上mouseup -&amp;gt; 输入框2上click&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;所有浏览器的焦点转移行为都发生在鼠标压下的阶段（mousedown），鼠标抬起（mouseup）对焦点没有任何影响。
+    &lt;br&gt;可以看出主要分歧在于focusout和focusin的触发时间，Chrome认为两者只是相应事件（blur和focus）的冒泡版本，因此在相应事件后触发；而IE认为两者其实是预览事件（preview），因此在相应事件前触发；Edge是一个折中；而Firefox干脆就没有这两个事件（莫非因为看不清楚趋势，先明哲保身一下？）。
+    &lt;br&gt;值得一提的是，还未定稿的
+    &lt;a href=&quot;https://www.w3.org/TR/uievents/#events-focusevent-event-order&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;界面事件规范&lt;/a&gt;中的定义，似乎与IE的行为更为一致。&lt;/p&gt;
+&lt;p&gt;那么，在这么多事件当中（mousedown / mouseup / click，focus / blur / focusin / focusout），焦点到底是什么时候转移的呢？
+    &lt;br&gt;这个问题上，浏览器自动分为了两个阵营：IE（包括Edge）一方当focusout触发的时候，焦点就已经转移到了新的输入框上；非IE（Firefox / Chrome）一方在失去焦点阶段内，焦点先回到默认值body上，而在获得焦点阶段，焦点才会转移到新的输入框上。&lt;/p&gt;
+&lt;p&gt;与所有其他浏览器都不同，IE 11默认情况下所有display为block或者table的元素都可以获得焦点。但Edge却与Chrome等非IE浏览器一致，典型的兄弟反水啊。&lt;/p&gt;
+&lt;h4 id=&quot;测试2-Tab键改变焦点&quot;&gt;
+    &lt;a href=&quot;#测试2-Tab键改变焦点&quot; class=&quot;headerlink&quot; title=&quot;测试2 Tab键改变焦点&quot;&gt;&lt;/a&gt;测试2 Tab键改变焦点&lt;/h4&gt;
+&lt;p&gt;初始时焦点位于输入框1上，通过按下键盘上Tab键将焦点移到下一个输入框（输入框2）上&lt;/p&gt;
+&lt;p&gt;各大浏览器的事件触发与鼠标改变焦点基本一致，只不过触发的是keydown和keyup，而不是mousedown或mouseup，也没有click事件。不过这中间还是有两点值得注意的。&lt;/p&gt;
+&lt;ol&gt;
+    &lt;li&gt;Firefox 46会在紧随着keydown之后，再触发一次keypress；而其他浏览器不会。&lt;/li&gt;
+    &lt;li&gt;如果是按住Tab键进行连续的焦点改变时，会在每个聚焦元素上分别触发keydown（Firefox会额外触发keypress），但是除最后一次外不会触发keyup事件。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;笔者试图寻找规范中的定义，可以没有找到。其实这也正常，定义规范本就是一个特别繁杂的工程，难免挂一漏万。更何况规范定义好了，各家浏览器厂商是否执行还是个未知数。HTML5搞出来两套不就是因为大家没法一起玩的结果么？论天下大事，分久必合，合久必分，习惯就好。&lt;/p&gt;</content>
+    
+    <summary type="html">
+    
+      常年做前端，哪能不恶心？虽然这两年浏览器兼容性是越来越好了，但还是会偶尔遇到一些其他问题，让你欲哭无泪，求死不能。今天我们就来八一八浏览器中跟聚焦（focus）有关的事件。
+    
+    </summary>
+    
+      <category term="技术" scheme="http://sparkshining.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="天天向上" scheme="http://sparkshining.com/tags/%E5%A4%A9%E5%A4%A9%E5%90%91%E4%B8%8A/"/>
+    
+      <category term="前端开发" scheme="http://sparkshining.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
   
   <entry>
     <title>经济危机中的倒牛奶行为</title>
