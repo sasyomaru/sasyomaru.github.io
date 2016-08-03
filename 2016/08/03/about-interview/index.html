@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Lambda表达式中的arguments - 顿悟</title>
+    <title>关于招聘与面试 - 顿悟</title>
     <link rel="stylesheet" href="/css/app.css">
     <link rel="stylesheet" href="/css/foundation-icons/foundation-icons.css">
 </head>
@@ -30,74 +30,47 @@
     </header>
     <div class="container">
         <section id="main">
-            <h1 class="title">Lambda表达式中的arguments</h1>
+            <h1 class="title">关于招聘与面试</h1>
             <section class="categories-and-tags">
                 <span>本文发表于</span>
-                <a class="category-link" href="/categories/技术/">技术</a>
+                <a class="category-link" href="/categories/思考/">思考</a>
                 <span>栏目，标签：</span>
-                <a class="tag-link" href="/tags/JS/">JS</a>、
-                <a class="tag-link" href="/tags/天天向上/">天天向上</a>
+                <a class="tag-link" href="/tags/天天向上/">天天向上</a>、
+                <a class="tag-link" href="/tags/管理/">管理</a>
             </section>
             <section class="main-content">
-                <p>最近在一个项目中遇到了这个坑，记下来，以警来者。</p>
-                <p>JavaScript在ES2015中初次引入了箭头函数（Arrow Function）这一俗称“lambda表达式”的概念，用来解决代码中this容易用错的问题（注意，this的定义从来就没有歧义，但确实是有点“反直觉”，容易被曾使用过其他语言的开发者误用）。想要了解这一特性，可以参阅
-                    <a href="http://es6.ruanyifeng.com/#docs/function" target="_blank" rel="external">这篇介绍ES6的文章</a>中“箭头函数”一节（原文中已对本文所述的问题做了介绍）。</p>
-                <p>在
-                    <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-arrow-function-definitions-runtime-semantics-evaluation" target="_blank" rel="external">ES2015语言规范</a>中，明确规定了箭头函数不定义arguments的本地绑定。换句话说，如果在箭头函数中使用了arguments，则其值为生成该函数的参数列表，比如下面代码：
-                    <br>
-                    <figure class="highlight javascript">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td>
-                                <td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getFunction</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> () =&gt; <span class="built_in">console</span>.log(<span class="built_in">arguments</span>[<span class="number">0</span>]);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> praise = getFunction(<span class="string">'You suck!'</span>);</div><div class="line">praise(<span class="string">'You are great!'</span>);</div></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>如果在支持ES2015的浏览器（比如最新版的Chrome，笔者版本为46.0）上执行时你会发现，控制台会打印如下结果：
-                    <br>
-                    <figure class="highlight plain">
-                        <table>
-                            <tr>
-                                <td class="gutter"><pre><div class="line">1</div></pre></td>
-                                <td class="code"><pre><div class="line">You suck!</div></pre></td>
-                            </tr>
-                        </table>
-                    </figure>
-                </p>
-                <p>而不是直觉上的You are great!</p>
-                <p>本来这个问题比较简单，规范上面这么定义的，这么做就是了。偏偏有人来搅局了：在ES2015尚未发布之前，
-                    <a href="http://www.typescriptlang.org/" target="_blank" rel="external">TypeScript</a>（一个微软推出的语言，为JavaScript的超集，由于与Angular 2和React的合作而逐渐被人所知）就定义了类似的功能并最初起名为Lambda(现已改为采用跟ES2015一致的术语“箭头函数”，但截至笔者写作本文时，有些文档尚未更新，比如
-                    <a href="http://www.typescriptlang.org/Handbook#functions-lambdas-and-using-39this39" target="_blank" rel="external">这里</a>)。在TypeScript中，
-                    <strong>起初</strong>并未对Lambda中的arguments做任何处理，因此，arguments所指向的就是最终函数的参数列表。也就是说如果你在TypeScript中编写了上文的程序，得到的打印结果就是You are great!。
-                    <br>幸运的是，TypeScript的开发者即时地意识到了这一点（见
-                    <a href="https://github.com/Microsoft/TypeScript/issues/1609" target="_blank" rel="external">这个TypeScript问题</a>）。因此，如果在lambda中使用了arguments，你会得到如下的结果：</p>
-                <ol>
-                    <li>在TypeScript 1.5之前，该代码顺利通过编译，生成与E2015语义不一致的代码</li>
-                    <li>在TypeScript 1.5之后，如果编译目标是ES6，该代码会顺利通过编译，生成箭头函数</li>
-                    <li>在TypeScript 1.5之后，如果编译目标是ES3或者ES5，则该代码不会通过编译，错误如下：
-                        <figure class="highlight plain">
-                            <table>
-                                <tr>
-                                    <td class="gutter"><pre><div class="line">1</div></pre></td>
-                                    <td class="code"><pre><div class="line">error TS2496: The &apos;arguments&apos; object cannot be referenced in an arrow function in ES3 and ES5. Consider using a standard function expression.</div></pre></td>
-                                </tr>
-                            </table>
-                        </figure>
-                    </li>
-                </ol>
+                <p>由于下面开出来了几个新职位，最近工作重心中很大一部分都用来招人与面试。一开始没经验，都是照着别的公司来，照猫画虎。随着经验的积累，慢慢感觉出好像哪里不太对。思考了很久，大概有了一套思路。笔者不是职业的人力，但愿这些怪谈不会太贻笑大方。</p>
+                <h3 id="雇员与企业">
+                    <a href="#雇员与企业" class="headerlink" title="雇员与企业"></a>雇员与企业</h3>
+                <p>当一个面试人员坐在面试者的面前的时候，他就不再是他个人，而是企业的形象代言人。所以面试官与面试者的关系，不是简单的两个人的关系，而是人与企业的关系。这就是为什么本文要先谈雇员与企业关系的原因。值得注意的是，不同行业、不同地点下，雇员与企业关系都会有所不同。本文所讨论的是中国一线城市里IT行业的情况，至于其他行业、其他地点，笔者经验所限，不敢妄加评论。
+                    <br>改革开放早期，笔者父辈一代的雇员是依附于企业的。这是因为雇员的养老医疗甚至住房教育都是靠企业来解决的。然而，随着福利制度的调整，养老医疗住房教育都改由社会或者市场来解决。加之找工作成本的下降，一线城市IT行业现在很难见到雇员依附企业的情况。如果工作不满意，完全可以换一家企业。在这样的条件下，企业和雇员之间是合作共生的关系。企业提供薪水、培训、发展机会；雇员提供劳务，并提高劳动效率，帮助企业节省成本。
+                    <br>另一方面，随着信息科技的迅猛发展，企业对于IT从业人员的需求，要远大于培养IT从业人员的速度。节节攀升的薪资幅度侧面印证了，这是一个卖方市场。资本的持有并没有给企业带来额外的谈判筹码。
+                    <br>因此，在招聘过程中，雇员与企业是一个双向选择的关系，
+                    <strong>双方是平等的</strong>。
+                    <br>也正是由于雇员与企业之间是平等的关系，本文采用了“企业”这两个词来与“雇员”对应，而没有采用“雇主”或者“用人单位”这两个明显带有偏向性的词汇。因为企业既不是“主”，更不能将雇员物化而“用”。同样，本文选用了“面试人员”和“面试者”，而不是“面试官”与“求职者”。</p>
+                <h3 id="面试的作用">
+                    <a href="#面试的作用" class="headerlink" title="面试的作用"></a>面试的作用</h3>
+                <p>面试绝对不是单向的。当面试人员考察面试者的时候，面试者也在通过面试人员而了解企业。鉴于交流时间的短暂，面试人员所体现出来的非专业行为会严重影响到面试者对于企业的印象。因此，如果一个没什么面试经验的面试人员无理由地表示对于面试毫无压力，很可能这个面试要出问题。
+                    <br>那么，面试人员和面试者双方之间是什么关系呢？笔者认为，是合作的关系。他们是在合作解决一个问题，即面试者是否适合这个岗位。注意，在这个问题上，面试者跟面试人员并不存在对立关系。因为工作在不合适的职位对面试者的心理和职业成长所带来的负面影响是极大的。即使可以短时拿到一笔可观的收入，面试者并不具有安全感，因为企业可以随时把他裁掉。
+                    <br>要注意的是，既然面试双方是在合作，那么面试就不是一场选出优胜者的智力竞赛，那么，
+                    <strong>一方感觉到占有智力优势所带来的快感对于面试没有任何帮助</strong>。这一条对于双方都是适用的。在面试中，如果任何一方感觉到“你被难住了吧”，就说明这一方已经偏离了面试的目的了。</p>
+                <h3 id="有效地面试">
+                    <a href="#有效地面试" class="headerlink" title="有效地面试"></a>有效地面试</h3>
+                <p>面试双方对于面试所投入的成本是很高的，双方都会投入大量的时间成本准备或参与面试活动。因此，面试一定要高效，不在不合适的机会上浪费时间对双方都有利。
+                    <br>面试的起点是简历的评估。如果一个面试者能够通过简历的筛查，那么只有两种可能的情况：一种可能是该面试者简历当中已经涵盖了该岗位的核心需求，在这种情况下，面试要做的就是验证简历的真实性，比如是否无中生有，是否夸大经历等等；另一种可能是该面试者简历当中未提及该岗位的核心需求，这时，面试要做的是了解面试者在该核心需求方面的能力。
+                    <br>不管是上述两种情况中的哪一种，面试人员所要检查的东西都跟该岗位的核心需求相关。也就是说，
+                    <strong>面试人员的问题，体现了面试人员对于该岗位的理解</strong>。如果面试问题奇葩，只能证明面试人员不够专业而且并不理解需要什么样的人。</p>
             </section>
             <section class="copyright">
                 <span>本文章版权声明：自由转载-非商用-非衍生-保持署名（</span>
                 <a href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank">知识共享Attribution-NoDerivatives 4.0 国际许可协议</a>
                 <span>）。原文地址：</span>
-                <a href="http://sparkshining.com/2015/11/02/arguments-in-lambda/">http://sparkshining.com/2015/11/02/arguments-in-lambda/</a>
+                <a href="http://sparkshining.com/2016/08/03/about-interview/">http://sparkshining.com/2016/08/03/about-interview/</a>
             </section>
             <section class="content-neighbors-link">
-                <a href="/2015/10/19/traditional-chinese-medical-science/" class="next-link">&lt;&lt; 旧一篇: 我的中医观</a>
-                <a href="/2015/12/16/dump-milk/" class="prev-link">新一篇: 经济危机中的倒牛奶行为 &gt;&gt;</a>
+                <a href="/2016/05/31/focus-management-in-browsers/" class="next-link">&lt;&lt; 旧一篇: 浏览器兼容之聚焦相关的事件</a>
             </section>
-            <div data-thread-key="arguments-in-lambda" data-title="Lambda表达式中的arguments" data-url="http://sparkshining.com/2015/11/02/arguments-in-lambda/" class="ds-thread"></div>
+            <div data-thread-key="about-interview" data-title="关于招聘与面试" data-url="http://sparkshining.com/2016/08/03/about-interview/" class="ds-thread"></div>
             <script type="text/javascript">
                 var duoshuoQuery = {
                     short_name: "sparkshining"
